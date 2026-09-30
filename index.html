@@ -3,7 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PARABOLAB: Media Pembelajaran Interaktif Fungsi Kuadrat SMP Kelas 9</title>
+    <title>Media Pembelajaran Interaktif: Fungsi Kuadrat SMP Kelas 9</title>
+
+    <!-- Tailwind CSS for sleek base modern layout -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Canvas Confetti Library for victory animation -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
     <style>
         :root {
             --primary: #4f46e5;
@@ -22,7 +29,7 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
         }
 
         body {
@@ -32,44 +39,6 @@
             min-height: 100vh;
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        header h1 {
-            font-size: 1.8rem;
-            color: var(--primary);
-            margin-bottom: 5px;
-        }
-
-        header p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
-
-        .dashboard {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        @media (min-width: 900px) {
-            .dashboard {
-                grid-template-columns: 1.2fr 0.8fr;
-            }
-        }
-
-        .card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            border: 1px solid var(--border-color);
-        }
-
         .canvas-container {
             position: relative;
             width: 100%;
@@ -77,9 +46,11 @@
             justify-content: center;
             align-items: center;
             background-color: #ffffff;
-            border-radius: 8px;
+            border-radius: 12px;
             overflow: hidden;
             border: 1px solid var(--border-color);
+            padding: 10px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
         }
 
         canvas {
@@ -90,298 +61,393 @@
             aspect-ratio: 1 / 1;
         }
 
-        .control-panel, .info-panel {
-            margin-bottom: 20px;
+        /* Pulse glow animation when target is hit */
+        @keyframes targetPulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(16, 185, 129, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
 
-        .panel-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 12px;
-            border-bottom: 2px solid var(--bg-color);
-            padding-bottom: 6px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .victory-glow {
+            animation: targetPulse 1.2s infinite;
+            border-color: var(--accent-green) !important;
+            background-color: #ecfdf5 !important;
         }
 
-        .slider-group {
-            margin-bottom: 18px;
-        }
-
-        .slider-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 6px;
-        }
-
-        .slider-label {
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-
-        /* Input Angka Ketik */
-        .number-input-container {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .number-input-container label {
-            font-weight: 600;
-            color: var(--primary);
-            font-size: 0.9rem;
-        }
-
-        input[type=number] {
-            width: 70px;
-            padding: 4px 8px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: var(--primary);
-            background-color: #eef2ff;
-            text-align: center;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        input[type=number]:focus {
-            border-color: var(--primary);
-            background-color: #ffffff;
-        }
-
-        input[type=range] {
+        /* Modal Overlay for Instructions and LKPD */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            height: 6px;
-            border-radius: 5px;
-            background: #cbd5e1;
-            outline: none;
-            accent-color: var(--primary);
-        }
-
-        .btn-container {
+            height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
             display: flex;
-            gap: 10px;
-            margin-top: 15px;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
         }
 
-        button {
-            flex: 1;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 0.9rem;
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
         }
 
-        .btn-reset {
-            background-color: #e2e8f0;
-            color: var(--text-main);
+        .modal-content {
+            background: #ffffff;
+            width: 90%;
+            max-width: 700px;
+            max-height: 85vh;
+            border-radius: 16px;
+            padding: 24px;
+            overflow-y: auto;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            position: relative;
         }
 
-        .btn-reset:hover {
-            background-color: #cbd5e1;
-        }
-
-        .btn-game {
-            background-color: var(--accent-orange);
-            color: white;
-        }
-
-        .btn-game:hover {
-            background-color: #ea580c;
-        }
-
-        .btn-game.active {
-            background-color: var(--accent-red);
-        }
-
-        .equation-box {
-            background-color: #eef2ff;
-            border-left: 4px solid var(--primary);
-            padding: 12px;
-            border-radius: 4px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            text-align: center;
-            color: var(--primary);
-            margin-bottom: 15px;
-        }
-
-        .info-item {
-            margin-bottom: 10px;
-            font-size: 0.9rem;
-            line-height: 1.4;
-        }
-
-        .info-item strong {
-            color: var(--text-main);
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: white;
-            background-color: var(--text-muted);
-        }
-
-        .badge-success { background-color: var(--accent-green); }
-        .badge-warning { background-color: var(--accent-orange); }
-        .badge-danger { background-color: var(--accent-red); }
-
-        .game-banner {
+        /* Pop-up Selebrasi Kemenangan */
+        .victory-banner {
             display: none;
-            background-color: #fef3c7;
-            border: 1px solid #fde047;
-            border-radius: 6px;
-            padding: 10px;
-            margin-bottom: 15px;
-            font-size: 0.9rem;
-            color: #78350f;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: rgba(255, 255, 255, 0.95);
+            border: 3px solid #10b981;
+            box-shadow: 0 20px 25px -5px rgba(16, 185, 129, 0.3);
+            border-radius: 16px;
+            padding: 20px 30px;
+            text-align: center;
+            z-index: 50;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none;
         }
 
-        .game-banner.active {
+        .victory-banner.show {
             display: block;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
         }
 
-        .game-status {
-            font-weight: bold;
-            margin-top: 5px;
+        /* PERBAIKAN CETAK / PRINT AGAR TIDAK TERPOTONG DI ATAS */
+        @media print {
+            body {
+                background: white !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                color: #000 !important;
+            }
+
+            /* Sembunyikan elemen utama non-cetak */
+            header, .dashboard-grid, .victory-banner, #btnOpenGuide {
+                display: none !important;
+            }
+
+            /* Modal Overlay disesuaikan penuh untuk flow cetak */
+            .modal-overlay {
+                position: static !important;
+                background: transparent !important;
+                opacity: 1 !important;
+                pointer-events: auto !important;
+                display: block !important;
+                width: 100% !important;
+                height: auto !important;
+            }
+
+            .modal-content {
+                position: static !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                max-height: none !important;
+                overflow: visible !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                border: none !important;
+            }
+
+            .close-modal, .modal-tabs, .btn-print-action {
+                display: none !important;
+            }
+
+            .tab-content {
+                display: block !important;
+            }
+
+            #tabGuide {
+                display: none !important;
+            }
+
+            textarea {
+                border: 1px solid #94a3b8 !important;
+                background: #ffffff !important;
+                resize: none !important;
+            }
         }
     </style>
 </head>
-<body>
+<body class="bg-slate-50 text-slate-800">
 
-    <header>
-        <h1>Media Pembelajaran Fungsi Kuadrat</h1>
-        <p>Eksplorasi Grafik Fungsi Kuadrat y = ax² + bx + c secara Interaktif</p>
+    <header class="text-center max-w-4xl mx-auto mb-6">
+        <h1 class="text-2xl md:text-3xl font-bold text-indigo-600 mb-1">Media Pembelajaran Fungsi Kuadrat</h1>
+        <p class="text-slate-500 text-sm md:text-base mb-3">Eksplorasi Grafik Fungsi Kuadrat y = ax² + bx + c secara Interaktif</p>
+        <div class="flex justify-center gap-3">
+            <button id="btnOpenGuide" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-5 py-2 rounded-full text-sm shadow-md transition-all flex items-center gap-2">
+                📖 Petunjuk & LKPD Siswa
+            </button>
+        </div>
     </header>
 
-    <div class="dashboard">
-        <!-- Kolom Kiri: Visualisasi Canvas -->
-        <div class="card">
-            <div class="canvas-container">
-                <canvas id="graphCanvas" width="600" height="600"></canvas>
+    <div class="dashboard-grid max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Left Side: Interactive Canvas -->
+        <div class="lg:col-span-7 flex flex-col justify-start">
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm relative">
+                
+                <!-- Victory Overlay Notification -->
+                <div id="victoryBanner" class="victory-banner">
+                    <div class="text-4xl mb-1">🎯✨</div>
+                    <h2 class="text-xl font-bold text-emerald-600">TARGET TERKONCI!</h2>
+                    <p class="text-sm text-slate-600 font-medium mt-1">Luar Biasa! Kurva Tepat Mengenai Target.</p>
+                    <div class="text-xs text-indigo-600 font-semibold mt-2 animate-pulse">Menyiapkan Target Baru...</div>
+                </div>
+
+                <div class="canvas-container">
+                    <canvas id="graphCanvas" width="600" height="600"></canvas>
+                </div>
+
+                <!-- Legend Indicator -->
+                <div class="flex flex-wrap items-center justify-center gap-4 mt-3 text-xs text-slate-600 font-medium">
+                    <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span> Puncak (P)</div>
+                    <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-orange-500 inline-block"></span> Potong Y</div>
+                    <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span> Akar Sumbu-X</div>
+                    <div id="legendTarget" class="hidden items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-yellow-400 border border-red-500 inline-block"></span> Target (★)</div>
+                </div>
             </div>
         </div>
 
-        <!-- Kolom Kanan: Kontrol & Informasi -->
-        <div>
-            <!-- Banner Mode Game -->
-            <div id="gameBanner" class="game-banner">
-                <strong>🎯 Tantangan "Tembak Target":</strong>
-                <p>Ubah nilai <em>a</em>, <em>b</em>, dan <em>c</em> agar grafik parabola tepat melewati titik Bintang Merah!</p>
-                <div id="gameStatus" class="game-status">Target Belum Tercapai</div>
-            </div>
-
-            <!-- Panel Kontrol -->
-            <div class="card control-panel">
-                <div class="panel-title">
-                    <span>Panel Kontrol Parameter</span>
+        <!-- Right Side: Control Panel & Analysis -->
+        <div class="lg:col-span-5 flex flex-col gap-4">
+            
+            <div id="gameBanner" class="bg-amber-50 border border-amber-200 rounded-2xl p-4 shadow-sm transition-all">
+                <div class="flex justify-between items-center mb-1">
+                    <strong class="text-amber-900 text-sm flex items-center gap-1">🎯 Tantangan "Tembak Target"</strong>
+                    <button id="btnNextTarget" class="hidden bg-amber-200 hover:bg-amber-300 text-amber-900 text-xs font-bold px-2.5 py-1 rounded-md transition-all">
+                        🔄 Target Selanjutnya
+                    </button>
                 </div>
-                
-                <!-- Group A -->
-                <div class="slider-group">
-                    <div class="slider-header">
-                        <span class="slider-label">Nilai a (Arah & Kelebaran)</span>
-                        <div class="number-input-container">
-                            <label for="numA">a =</label>
-                            <input type="number" id="numA" min="-5" max="5" step="0.1" value="1">
-                        </div>
-                    </div>
-                    <input type="range" id="sliderA" min="-5" max="5" step="0.1" value="1">
-                </div>
-
-                <!-- Group B -->
-                <div class="slider-group">
-                    <div class="slider-header">
-                        <span class="slider-label">Nilai b (Posisi Sumbu Simetri)</span>
-                        <div class="number-input-container">
-                            <label for="numB">b =</label>
-                            <input type="number" id="numB" min="-10" max="10" step="0.5" value="0">
-                        </div>
-                    </div>
-                    <input type="range" id="sliderB" min="-10" max="10" step="0.5" value="0">
-                </div>
-
-                <!-- Group C -->
-                <div class="slider-group">
-                    <div class="slider-header">
-                        <span class="slider-label">Nilai c (Titik Potong Sumbu-Y)</span>
-                        <div class="number-input-container">
-                            <label for="numC">c =</label>
-                            <input type="number" id="numC" min="-10" max="10" step="0.5" value="0">
-                        </div>
-                    </div>
-                    <input type="range" id="sliderC" min="-10" max="10" step="0.5" value="0">
-                </div>
-
-                <div class="btn-container">
-                    <button class="btn-reset" id="btnReset">Reset Nilai</button>
-                    <button class="btn-game" id="btnGame">Mode Tantangan: OFF</button>
+                <p class="text-xs text-amber-800 leading-relaxed">
+                    Ubah nilai <em>a</em>, <em>b</em>, dan <em>c</em> agar grafik parabola tepat melewati titik Bintang Merah!
+                </p>
+                <div id="gameStatus" class="mt-2 text-xs font-bold text-amber-900 flex items-center gap-1">
+                    Status: Siap Menembak
                 </div>
             </div>
 
-            <!-- Panel Informasi -->
-            <div class="card info-panel">
-                <div class="panel-title">Analisis Karakteristik</div>
-                
-                <div class="equation-box" id="eqDisplay">
+            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+                <div class="flex justify-between items-center pb-2 mb-4 border-b border-slate-100">
+                    <h3 class="font-bold text-indigo-600 text-base">Panel Kontrol Parameter</h3>
+                    <span class="text-xs bg-indigo-50 text-indigo-600 px-2.5 py-1 rounded-full font-semibold">y = ax² + bx + c</span>
+                </div>
+
+                <!-- Slider A -->
+                <div class="mb-4">
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="text-xs font-bold text-slate-700">Nilai a (Arah & Kelebaran)</label>
+                        <div class="flex items-center gap-1">
+                            <span class="text-xs font-bold text-indigo-600">a =</span>
+                            <input type="number" id="numA" min="-5" max="5" step="0.1" value="1" class="w-16 text-center text-xs font-bold bg-indigo-50 border border-indigo-200 rounded-md py-1 text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                        </div>
+                    </div>
+                    <input type="range" id="sliderA" min="-5" max="5" step="0.1" value="1" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                </div>
+
+                <!-- Slider B -->
+                <div class="mb-4">
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="text-xs font-bold text-slate-700">Nilai b (Posisi Sumbu Simetri)</label>
+                        <div class="flex items-center gap-1">
+                            <span class="text-xs font-bold text-indigo-600">b =</span>
+                            <input type="number" id="numB" min="-10" max="10" step="0.5" value="0" class="w-16 text-center text-xs font-bold bg-indigo-50 border border-indigo-200 rounded-md py-1 text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                        </div>
+                    </div>
+                    <input type="range" id="sliderB" min="-10" max="10" step="0.5" value="0" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                </div>
+
+                <!-- Slider C -->
+                <div class="mb-4">
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="text-xs font-bold text-slate-700">Nilai c (Titik Potong Sumbu-Y)</label>
+                        <div class="flex items-center gap-1">
+                            <span class="text-xs font-bold text-indigo-600">c =</span>
+                            <input type="number" id="numC" min="-10" max="10" step="0.5" value="0" class="w-16 text-center text-xs font-bold bg-indigo-50 border border-indigo-200 rounded-md py-1 text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                        </div>
+                    </div>
+                    <input type="range" id="sliderC" min="-10" max="10" step="0.5" value="0" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                </div>
+
+                <!-- Control Action Buttons -->
+                <div class="flex gap-2 mt-4 pt-2 border-t border-slate-100">
+                    <button id="btnReset" class="flex-1 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg text-xs transition-all">
+                        🔄 Reset
+                    </button>
+                    <button id="btnGame" class="flex-1 py-2 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-lg text-xs transition-all shadow-sm">
+                        🎮 Mode Tantangan: OFF
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex-1">
+                <h3 class="font-bold text-indigo-600 text-base pb-2 mb-3 border-b border-slate-100">Analisis Karakteristik</h3>
+
+                <div id="eqDisplay" class="bg-indigo-50 border-l-4 border-indigo-600 p-3 rounded-r-lg text-lg font-bold text-indigo-700 text-center mb-4 tracking-wide shadow-inner">
                     y = x²
                 </div>
 
-                <div class="info-item">
-                    <strong>Bentuk Parabola:</strong> <span id="infoShape">-</span>
+                <div class="space-y-2 text-xs">
+                    <div class="flex justify-between items-center pb-1 border-b border-slate-50">
+                        <span class="text-slate-500 font-medium">Bentuk Parabola:</span>
+                        <span id="infoShape" class="font-semibold text-slate-800 text-right">-</span>
+                    </div>
+                    <div class="flex justify-between items-center pb-1 border-b border-slate-50">
+                        <span class="text-slate-500 font-medium">Diskriminan (D = b² - 4ac):</span>
+                        <span id="infoD" class="font-bold text-slate-800">-</span>
+                    </div>
+                    <div class="text-right">
+                        <span id="badgeD" class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold text-white bg-slate-400"></span>
+                    </div>
+                    <div class="flex justify-between items-center pb-1 border-b border-slate-50">
+                        <span class="text-slate-500 font-medium">Sumbu Simetri (x = -b / 2a):</span>
+                        <span id="infoAxis" class="font-bold text-indigo-600">-</span>
+                    </div>
+                    <div class="flex justify-between items-center pb-1 border-b border-slate-50">
+                        <span class="text-slate-500 font-medium">Titik Puncak/Balik P(x, y):</span>
+                        <span id="infoVertex" class="font-bold text-red-600">-</span>
+                    </div>
+                    <div class="flex justify-between items-center pb-1 border-b border-slate-50">
+                        <span class="text-slate-500 font-medium">Potong Sumbu-Y:</span>
+                        <span id="infoInterceptY" class="font-semibold text-orange-600">(0, 0)</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-500 font-medium">Potong Sumbu-X:</span>
+                        <span id="infoInterceptX" class="font-semibold text-emerald-600 text-right">-</span>
+                    </div>
                 </div>
-                <div class="info-item">
-                    <strong>Diskriminan (D = b² - 4ac):</strong> <span id="infoD">-</span>
-                    <div><span id="badgeD" class="badge"></span></div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content">
+            <button class="close-modal text-slate-400 hover:text-slate-600 font-bold text-2xl" id="btnCloseModal">&times;</button>
+            
+            <div class="modal-tabs flex gap-4 border-b border-slate-200 mb-4">
+                <button class="tab-btn font-bold text-sm text-indigo-600 pb-2 border-b-2 border-indigo-600" onclick="switchTab('tabGuide', event)">📌 Petunjuk Penggunaan</button>
+                <button class="tab-btn font-bold text-sm text-slate-500 pb-2 border-b-2 border-transparent hover:text-indigo-600" onclick="switchTab('tabLKPD', event)">📝 LKPD Interaktif</button>
+            </div>
+
+            <!-- Tab 1: Guide -->
+            <div id="tabGuide" class="tab-content">
+                <h3 class="text-base font-bold text-slate-800 mb-2">Petunjuk Penggunaan Media</h3>
+                <p class="text-xs text-slate-600 leading-relaxed mb-3">Selamat datang! Media interaktif ini dirancang untuk membantumu memahami konsep Grafik Fungsi Kuadrat secara visual.</p>
+                
+                <ol class="list-decimal pl-5 text-xs text-slate-600 space-y-2 leading-relaxed">
+                    <li><strong>Mengubah Nilai Parameter:</strong> Geser slider atau ketik angka pada kotak a, b, dan c untuk melihat perubahan grafik secara langsung.</li>
+                    <li><strong>Titik-Titik Penting:</strong>
+                        <ul class="list-disc pl-4 mt-1 space-y-1">
+                            <li><span class="text-red-500 font-bold">● Titik Merah (P)</span> = Titik Puncak / Titik Balik Parabola.</li>
+                            <li><span class="text-orange-500 font-bold">● Titik Oranye</span> = Titik Potong Parabola dengan Sumbu-Y.</li>
+                            <li><span class="text-emerald-500 font-bold">● Titik Hijau</span> = Titik Potong Parabola dengan Sumbu-X (Akar-akar).</li>
+                        </ul>
+                    </li>
+                    <li><strong>Mode Tantangan (Game):</strong> Klik tombol <em>"Mode Tantangan: OFF"</em> untuk mengaktifkan permainan tembak target. Target akan otomatis diperbarui setiap kali kamu berhasil mengenainya!</li>
+                    <li><strong>Pengerjaan LKPD:</strong> Buka tab <em>"LKPD Interaktif"</em> untuk menyelesaikan lembar kerja eksplorasi. Hasil pengerjaan dapat dicetak atau disimpan sebagai PDF.</li>
+                </ol>
+            </div>
+
+            <!-- Tab 2: LKPD -->
+            <div id="tabLKPD" class="tab-content hidden">
+                <h3 class="text-base font-bold text-slate-800 mb-1">Lembar Kerja Peserta Didik (LKPD)</h3>
+                <p class="text-xs text-slate-500 mb-4">Isi identitas dan kerjakan eksplorasi berikut dengan menggeser slider pada grafik!</p>
+                
+                <!-- Student Info Inputs -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+                    <input type="text" placeholder="Nama Lengkap Siswa" class="p-2 text-xs border border-slate-300 rounded-lg focus:outline-indigo-500">
+                    <input type="text" placeholder="Kelas / No. Absen" class="p-2 text-xs border border-slate-300 rounded-lg focus:outline-indigo-500">
                 </div>
-                <div class="info-item">
-                    <strong>Sumbu Simetri (x = -b / 2a):</strong> <span id="infoAxis">-</span>
+
+                <!-- Section 1 -->
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 mb-3 text-xs">
+                    <h4 class="font-bold text-indigo-600 mb-1">Kegiatan 1: Pengaruh Nilai a terhadap Grafik</h4>
+                    <p class="text-slate-600 mb-2">Atur b = 0 dan c = 0. Ubah nilai a menjadi positif (a > 0), lalu ubah menjadi negatif (a < 0).</p>
+                    
+                    <label class="font-semibold block mb-1 text-slate-700">1. Apa yang terjadi pada arah keterbukaan parabola saat a > 0 dan a < 0?</label>
+                    <textarea class="w-full p-2 border border-slate-300 rounded-lg text-xs mb-2 focus:outline-indigo-500" rows="2" placeholder="Tuliskan jawabanmu di sini..."></textarea>
+                    
+                    <label class="font-semibold block mb-1 text-slate-700">2. Apa yang terjadi pada bentuk parabola saat nilai a semakin besar (misal a = 1 dibanding a = 4)?</label>
+                    <textarea class="w-full p-2 border border-slate-300 rounded-lg text-xs focus:outline-indigo-500" rows="2" placeholder="Tuliskan jawabanmu di sini..."></textarea>
                 </div>
-                <div class="info-item">
-                    <strong>Titik Puncak/Balik P(x, y):</strong> <span id="infoVertex">-</span>
+
+                <!-- Section 2 -->
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 mb-3 text-xs">
+                    <h4 class="font-bold text-indigo-600 mb-1">Kegiatan 2: Pengaruh Nilai c terhadap Titik Potong Sumbu-Y</h4>
+                    <p class="text-slate-600 mb-2">Atur a = 1 dan b = 0. Ubah nilai c (misal c = -3, c = 0, c = 4).</p>
+                    
+                    <label class="font-semibold block mb-1 text-slate-700">Apa hubungan antara nilai c dengan posisi titik potong grafik pada Sumbu-Y?</label>
+                    <textarea class="w-full p-2 border border-slate-300 rounded-lg text-xs focus:outline-indigo-500" rows="2" placeholder="Tuliskan jawabanmu di sini..."></textarea>
                 </div>
-                <div class="info-item">
-                    <strong>Titik Potong Sumbu-Y:</strong> <span id="infoInterceptY">(0, 0)</span>
+
+                <!-- Section 3 -->
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 mb-3 text-xs">
+                    <h4 class="font-bold text-indigo-600 mb-1">Kegiatan 3: Hubungan Diskriminan (D) dengan Titik Potong Sumbu-X</h4>
+                    <p class="text-slate-600 mb-1">Coba buat fungsi kuadrat dengan syarat:</p>
+                    <ul class="list-disc pl-4 text-slate-600 mb-2">
+                        <li>a) D > 0 (Contoh: a=1, b=0, c=-4)</li>
+                        <li>b) D = 0 (Contoh: a=1, b=-2, c=1)</li>
+                        <li>c) D < 0 (Contoh: a=1, b=0, c=4)</li>
+                    </ul>
+                    
+                    <label class="font-semibold block mb-1 text-slate-700">Kesimpulan apa yang kamu dapatkan mengenai jumlah titik potong Sumbu-X berdasarkan nilai Diskriminan (D)?</label>
+                    <textarea class="w-full p-2 border border-slate-300 rounded-lg text-xs focus:outline-indigo-500" rows="2" placeholder="Tuliskan jawaban kesimpulanmu di sini..."></textarea>
                 </div>
-                <div class="info-item">
-                    <strong>Titik Potong Sumbu-X:</strong> <span id="infoInterceptX">-</span>
-                </div>
+
+                <button class="btn-print-action w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs transition-all shadow-md mt-2 flex justify-center items-center gap-2" onclick="window.print()">
+                    🖨️ Cetak / Simpan Jawaban (PDF)
+                </button>
             </div>
         </div>
     </div>
 
     <script>
-        // Inisialisasi Element DOM
         const canvas = document.getElementById('graphCanvas');
         const ctx = canvas.getContext('2d');
 
-        // Elements Slider
+        // Slider Elements
         const sliderA = document.getElementById('sliderA');
         const sliderB = document.getElementById('sliderB');
         const sliderC = document.getElementById('sliderC');
 
-        // Elements Input Number
+        // Number Input Elements
         const numA = document.getElementById('numA');
         const numB = document.getElementById('numB');
         const numC = document.getElementById('numC');
 
+        // Action Buttons & UI Elements
         const btnReset = document.getElementById('btnReset');
         const btnGame = document.getElementById('btnGame');
         const gameBanner = document.getElementById('gameBanner');
         const gameStatus = document.getElementById('gameStatus');
+        const btnNextTarget = document.getElementById('btnNextTarget');
+        const victoryBanner = document.getElementById('victoryBanner');
+        const legendTarget = document.getElementById('legendTarget');
 
+        // Info Displays
         const eqDisplay = document.getElementById('eqDisplay');
         const infoShape = document.getElementById('infoShape');
         const infoD = document.getElementById('infoD');
@@ -391,39 +457,39 @@
         const infoInterceptY = document.getElementById('infoInterceptY');
         const infoInterceptX = document.getElementById('infoInterceptX');
 
-        // Pengaturan Sistem Koordinat Canvas
-        const GRID_RANGE = 10; // Rentang nilai -10 sampai 10
+        // Modal Elements
+        const modalOverlay = document.getElementById('modalOverlay');
+        const btnOpenGuide = document.getElementById('btnOpenGuide');
+        const btnCloseModal = document.getElementById('btnCloseModal');
+
+        // Grid Configuration
+        const GRID_RANGE = 12; 
+        const PADDING = 30; 
+        
         let width = canvas.width;
         let height = canvas.height;
-        let scale = width / (GRID_RANGE * 2); // piksel per unit matematika
+        let scale = (width - PADDING * 2) / (GRID_RANGE * 2); 
         let originX = width / 2;
         let originY = height / 2;
 
-        // State Mode Game
+        // Game State Variables
         let isGameMode = false;
         let targetPoint = { x: 0, y: 0 };
+        let hasHitCurrentTarget = false;
+        let autoNextTimeout = null;
 
-        // Konversi Koordinat Matematika ke Koordinat Canvas (Piksel)
-        function toCanvasX(x) {
-            return originX + x * scale;
-        }
+        function toCanvasX(x) { return originX + x * scale; }
+        function toCanvasY(y) { return originY - y * scale; }
 
-        function toCanvasY(y) {
-            return originY - y * scale;
-        }
-
-        // Jalankan Update Visualisasi
         function update() {
             let a = parseFloat(sliderA.value);
             let b = parseFloat(sliderB.value);
             let c = parseFloat(sliderC.value);
 
-            // Perbarui nilai di Input Number agar sinkron
             numA.value = a;
             numB.value = b;
             numC.value = c;
 
-            // Render komponen
             drawGrid();
             drawParabola(a, b, c);
             
@@ -435,26 +501,21 @@
             updateInfo(a, b, c);
         }
 
-        // Sinkronisasi dari Input Number ke Slider
         function syncFromInput() {
             let a = parseFloat(numA.value);
             let b = parseFloat(numB.value);
             let c = parseFloat(numC.value);
 
-            // Validasi jika input kosong / invalid
             if (isNaN(a)) a = 1;
             if (isNaN(b)) b = 0;
             if (isNaN(c)) c = 0;
 
-            // Batasi nilai a tidak boleh 0 agar tetap menjadi Fungsi Kuadrat
             if (a === 0) a = 0.1;
 
-            // Terapkan batas min/max
             a = Math.max(-5, Math.min(5, a));
             b = Math.max(-10, Math.min(10, b));
             c = Math.max(-10, Math.min(10, c));
 
-            // Perbarui slider
             sliderA.value = a;
             sliderB.value = b;
             sliderC.value = c;
@@ -462,63 +523,54 @@
             update();
         }
 
-        // Gambar Grid & Sumbu Kartesius
         function drawGrid() {
             ctx.clearRect(0, 0, width, height);
-
-            // Garis-garis Grid
             ctx.strokeStyle = '#f1f5f9';
             ctx.lineWidth = 1;
 
             for (let i = -GRID_RANGE; i <= GRID_RANGE; i++) {
-                // Garis vertikal
                 ctx.beginPath();
                 ctx.moveTo(toCanvasX(i), 0);
                 ctx.lineTo(toCanvasX(i), height);
                 ctx.stroke();
 
-                // Garis horizontal
                 ctx.beginPath();
                 ctx.moveTo(0, toCanvasY(i));
                 ctx.lineTo(width, toCanvasY(i));
                 ctx.stroke();
             }
 
-            // Sumbu Utama (X dan Y)
+            // Draw Main X and Y Axes
             ctx.strokeStyle = '#94a3b8';
             ctx.lineWidth = 2;
 
-            // Sumbu X
             ctx.beginPath();
             ctx.moveTo(0, originY);
             ctx.lineTo(width, originY);
             ctx.stroke();
 
-            // Sumbu Y
             ctx.beginPath();
             ctx.moveTo(originX, 0);
             ctx.lineTo(originX, height);
             ctx.stroke();
 
-            // Angka Skala Grid
+            // Axis Numbers
             ctx.fillStyle = '#64748b';
             ctx.font = '11px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'top';
 
-            for (let i = -GRID_RANGE; i <= GRID_RANGE; i++) {
-                if (i !== 0 && i % 2 === 0) {
-                    // Label Sumbu X
-                    ctx.fillText(i.toString(), toCanvasX(i), originY + 5);
-                    // Label Sumbu Y
-                    ctx.textAlign = 'right';
-                    ctx.fillText(i.toString(), originX - 5, toCanvasY(i) - 5);
+            for (let i = -10; i <= 10; i += 2) {
+                if (i !== 0) {
                     ctx.textAlign = 'center';
+                    ctx.textBaseline = 'top';
+                    ctx.fillText(i.toString(), toCanvasX(i), originY + 6);
+
+                    ctx.textAlign = 'right';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(i.toString(), originX - 6, toCanvasY(i));
                 }
             }
         }
 
-        // Gambar Grafik Parabola & Marker Titik Penting
         function drawParabola(a, b, c) {
             ctx.beginPath();
             ctx.strokeStyle = '#4f46e5';
@@ -539,36 +591,38 @@
             }
             ctx.stroke();
 
-            // Hitung Titik Puncak (Vertex)
+            // Vertex Point
             let xv = -b / (2 * a);
             let yv = a * xv * xv + b * xv + c;
-
-            // Gambar Titik Puncak P(x, y)
-            drawMarker(xv, yv, '#ef4444', `P(${xv.toFixed(1)}, ${yv.toFixed(1)})`);
-
-            // Gambar Titik Potong Sumbu-Y (0, c)
-            drawMarker(0, c, '#f97316', `(0, ${c.toFixed(1)})`);
-
-            // Gambar Titik Potong Sumbu-X (Akar-akar) jika D >= 0
             let D = b * b - 4 * a * c;
+
+            let pointsToDraw = [];
+            pointsToDraw.push({ x: xv, y: yv, color: '#ef4444', label: `P(${xv.toFixed(1)}, ${yv.toFixed(1)})` });
+
+            if (Math.abs(xv - 0) > 0.05 || Math.abs(yv - c) > 0.05) {
+                pointsToDraw.push({ x: 0, y: c, color: '#f97316', label: `(0, ${c.toFixed(1)})` });
+            }
+
             if (D >= 0) {
                 let x1 = (-b + Math.sqrt(D)) / (2 * a);
                 let x2 = (-b - Math.sqrt(D)) / (2 * a);
 
-                drawMarker(x1, 0, '#10b981', `(${x1.toFixed(1)}, 0)`);
-                if (D > 0) {
-                    drawMarker(x2, 0, '#10b981', `(${x2.toFixed(1)}, 0)`);
+                if (Math.abs(x1 - xv) > 0.05 || Math.abs(yv - 0) > 0.05) {
+                    pointsToDraw.push({ x: x1, y: 0, color: '#10b981', label: `(${x1.toFixed(1)}, 0)` });
+                }
+                if (D > 0 && (Math.abs(x2 - xv) > 0.05 || Math.abs(yv - 0) > 0.05)) {
+                    pointsToDraw.push({ x: x2, y: 0, color: '#10b981', label: `(${x2.toFixed(1)}, 0)` });
                 }
             }
+
+            pointsToDraw.forEach(pt => drawMarker(pt.x, pt.y, pt.color, pt.label));
         }
 
-        // Gambar Marker Titik dan Label
         function drawMarker(x, y, color, label) {
             let cx = toCanvasX(x);
             let cy = toCanvasY(y);
 
-            // Batasi agar marker hanya digambar jika berada di dalam tampilan canvas
-            if (cx < 0 || cx > width || cy < 0 || cy > height) return;
+            if (cx < 10 || cx > width - 10 || cy < 10 || cy > height - 10) return;
 
             ctx.beginPath();
             ctx.arc(cx, cy, 6, 0, 2 * Math.PI);
@@ -578,27 +632,25 @@
             ctx.lineWidth = 2;
             ctx.stroke();
 
-            // Teks Label Titik
             ctx.fillStyle = '#1e293b';
-            ctx.font = 'bold 12px sans-serif';
+            ctx.font = 'bold 11px sans-serif';
             ctx.textAlign = 'left';
-            ctx.fillText(label, cx + 8, cy - 8);
+            ctx.textBaseline = 'bottom';
+            ctx.fillText(label, cx + 8, cy - 4);
         }
 
-        // Gambar Titik Target Tantangan Game
         function drawTarget() {
             let cx = toCanvasX(targetPoint.x);
             let cy = toCanvasY(targetPoint.y);
 
             ctx.beginPath();
-            ctx.arc(cx, cy, 10, 0, 2 * Math.PI);
-            ctx.fillStyle = '#ef4444';
+            ctx.arc(cx, cy, 12, 0, 2 * Math.PI);
+            ctx.fillStyle = hasHitCurrentTarget ? '#10b981' : '#ef4444';
             ctx.fill();
             ctx.strokeStyle = '#fef08a';
             ctx.lineWidth = 3;
             ctx.stroke();
 
-            // Gambar Simbol Bintang di Tengah Target
             ctx.fillStyle = '#ffffff';
             ctx.font = 'bold 12px sans-serif';
             ctx.textAlign = 'center';
@@ -606,23 +658,49 @@
             ctx.fillText('★', cx, cy);
         }
 
-        // Cek Apakah Kurva Membentur Target
         function checkHit(a, b, c) {
             let expectedY = a * targetPoint.x * targetPoint.x + b * targetPoint.x + c;
             let diff = Math.abs(expectedY - targetPoint.y);
 
-            if (diff < 0.3) {
-                gameStatus.textContent = "🎉 BERHASIL! Kurva Tepat Mengenai Target!";
-                gameStatus.style.color = "#10b981";
+            if (diff < 0.35) {
+                if (!hasHitCurrentTarget) {
+                    hasHitCurrentTarget = true;
+                    
+                    // Trigger Victory Visuals
+                    gameStatus.innerHTML = "<span class='text-emerald-600'>🎉 BERHASIL! Tepat Mengenai Target!</span>";
+                    gameBanner.classList.add('victory-glow');
+                    victoryBanner.classList.add('show');
+
+                    // Fire Confetti Animation
+                    if (typeof confetti === 'function') {
+                        confetti({
+                            particleCount: 80,
+                            spread: 70,
+                            origin: { y: 0.6 }
+                        });
+                    }
+
+                    // Schedule automatic next target generation
+                    clearTimeout(autoNextTimeout);
+                    autoNextTimeout = setTimeout(() => {
+                        if (isGameMode) {
+                            generateRandomTarget();
+                            update();
+                        }
+                    }, 2200);
+                }
             } else {
-                gameStatus.textContent = "❌ Belum Mengenai Target. Ayo Sesuaikan Nilai!";
-                gameStatus.style.color = "#ef4444";
+                if (hasHitCurrentTarget) {
+                    hasHitCurrentTarget = false;
+                    clearTimeout(autoNextTimeout);
+                }
+                gameStatus.innerHTML = `<span class='text-amber-800'>🎯 Bidik Target di (${targetPoint.x}, ${targetPoint.y})</span>`;
+                gameBanner.classList.remove('victory-glow');
+                victoryBanner.classList.remove('show');
             }
         }
 
-        // Perbarui Teks Informasi Matematika
         function updateInfo(a, b, c) {
-            // Format Tampilan Persamaan Kuadrat
             let strA = a === 1 ? 'x²' : (a === -1 ? '-x²' : `${a}x²`);
             let strB = '';
             if (b > 0) strB = ` + ${b}x`;
@@ -634,29 +712,26 @@
 
             eqDisplay.innerHTML = `y = ${strA}${strB}${strC}`;
 
-            // Arah Terbuka Parabola
             if (a > 0) {
-                infoShape.textContent = "Terbuka ke ATAS (Memiliki Nilai Minimum)";
+                infoShape.textContent = "Terbuka ke ATAS (Minimum)";
             } else {
-                infoShape.textContent = "Terbuka ke BAWAH (Memiliki Nilai Maksimum)";
+                infoShape.textContent = "Terbuka ke BAWAH (Maksimum)";
             }
 
-            // Perhitungan Diskriminan
             let D = b * b - 4 * a * c;
             infoD.textContent = `${D.toFixed(2)}`;
 
             if (D > 0) {
                 badgeD.textContent = "D > 0: Memotong Sumbu-X di 2 Titik";
-                badgeD.className = "badge badge-success";
+                badgeD.className = "inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold text-white bg-emerald-500";
             } else if (D === 0) {
                 badgeD.textContent = "D = 0: Menyinggung Sumbu-X di 1 Titik";
-                badgeD.className = "badge badge-warning";
+                badgeD.className = "inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold text-white bg-amber-500";
             } else {
                 badgeD.textContent = "D < 0: Tidak Memotong Sumbu-X";
-                badgeD.className = "badge badge-danger";
+                badgeD.className = "inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold text-white bg-red-500";
             }
 
-            // Sumbu Simetri & Titik Puncak
             let xv = -b / (2 * a);
             let yv = a * xv * xv + b * xv + c;
 
@@ -664,36 +739,61 @@
             infoVertex.textContent = `P(${xv.toFixed(2)}, ${yv.toFixed(2)})`;
             infoInterceptY.textContent = `(0, ${c})`;
 
-            // Titik Potong Sumbu-X
             if (D > 0) {
                 let x1 = (-b + Math.sqrt(D)) / (2 * a);
                 let x2 = (-b - Math.sqrt(D)) / (2 * a);
-                infoInterceptX.textContent = `(${x1.toFixed(2)}, 0) dan (${x2.toFixed(2)}, 0)`;
+                infoInterceptX.textContent = `(${x1.toFixed(2)}, 0) & (${x2.toFixed(2)}, 0)`;
             } else if (D === 0) {
                 infoInterceptX.textContent = `(${xv.toFixed(2)}, 0)`;
             } else {
-                infoInterceptX.textContent = "Tidak Ada Titik Potong Real";
+                infoInterceptX.textContent = "Tidak Ada Akar Real";
             }
         }
 
-        // Generator Koordinat Target Acak
         function generateRandomTarget() {
-            let rx = (Math.floor(Math.random() * 13) - 6);
+            hasHitCurrentTarget = false;
+            victoryBanner.classList.remove('show');
+            gameBanner.classList.remove('victory-glow');
+
+            // Generate achievable grid target points
+            let rx = (Math.floor(Math.random() * 11) - 5);
             let ry = (Math.floor(Math.random() * 15) - 7);
+            
+            // Ensure target is not purely (0,0) for better gameplay
+            if (rx === 0 && ry === 0) ry = 3;
+
             targetPoint = { x: rx, y: ry };
+            gameStatus.innerHTML = `<span class='text-amber-800'>🎯 Bidik Target di (${targetPoint.x}, ${targetPoint.y})</span>`;
         }
 
-        // Event Listener Slider
+        function switchTab(tabId, evt) {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('text-indigo-600', 'border-indigo-600');
+                btn.classList.add('text-slate-500', 'border-transparent');
+            });
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
+            
+            evt.target.classList.remove('text-slate-500', 'border-transparent');
+            evt.target.classList.add('text-indigo-600', 'border-indigo-600');
+            document.getElementById(tabId).classList.remove('hidden');
+        }
+
+        // Modal Event Handlers
+        btnOpenGuide.addEventListener('click', () => modalOverlay.classList.add('active'));
+        btnCloseModal.addEventListener('click', () => modalOverlay.classList.remove('active'));
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) modalOverlay.classList.remove('active');
+        });
+
+        // Controls Event Listeners
         sliderA.addEventListener('input', update);
         sliderB.addEventListener('input', update);
         sliderC.addEventListener('input', update);
 
-        // Event Listener Input Ketik
         numA.addEventListener('input', syncFromInput);
         numB.addEventListener('input', syncFromInput);
         numC.addEventListener('input', syncFromInput);
 
-        // Event Reset Button
         btnReset.addEventListener('click', () => {
             sliderA.value = 1;
             sliderB.value = 0;
@@ -701,24 +801,45 @@
             update();
         });
 
-        // Event Game Mode Toggle
+        btnNextTarget.addEventListener('click', () => {
+            if (isGameMode) {
+                generateRandomTarget();
+                update();
+            }
+        });
+
         btnGame.addEventListener('click', () => {
             isGameMode = !isGameMode;
             if (isGameMode) {
-                btnGame.textContent = "Mode Tantangan: ON";
-                btnGame.classList.add('active');
-                gameBanner.classList.add('active');
+                btnGame.textContent = "🎮 Mode Tantangan: ON";
+                btnGame.classList.replace('bg-amber-500', 'bg-emerald-600');
+                btnGame.classList.replace('hover:bg-amber-600', 'hover:bg-emerald-700');
+                
+                btnNextTarget.classList.remove('hidden');
+                legendTarget.classList.remove('hidden');
+                legendTarget.classList.add('flex');
+                
                 generateRandomTarget();
             } else {
-                btnGame.textContent = "Mode Tantangan: OFF";
-                btnGame.classList.remove('active');
-                gameBanner.classList.remove('active');
+                btnGame.textContent = "🎮 Mode Tantangan: OFF";
+                btnGame.classList.replace('bg-emerald-600', 'bg-amber-500');
+                btnGame.classList.replace('hover:bg-emerald-700', 'hover:bg-amber-600');
+                
+                btnNextTarget.classList.add('hidden');
+                legendTarget.classList.add('hidden');
+                legendTarget.classList.remove('flex');
+                
+                victoryBanner.classList.remove('show');
+                gameBanner.classList.remove('victory-glow');
+                gameStatus.innerHTML = "Status: Mode Tantangan Dinonaktifkan";
             }
             update();
         });
 
-        // Jalankan Inisialisasi Pertama
-        update();
+        // Initial Start
+        window.onload = function() {
+            update();
+        };
     </script>
 </body>
 </html>
