@@ -3,14 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Media Pembelajaran Interaktif: Fungsi Kuadrat</title>
-
-    <!-- Tailwind CSS for sleek base modern layout -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Canvas Confetti Library for victory animation -->
+    <title>Media Pembelajaran Interaktif: Fungsi Kuadrat </title>
+    <!-- Canvas Confetti Library -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-
     <style>
         :root {
             --primary: #4f46e5;
@@ -29,7 +24,7 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
@@ -39,6 +34,67 @@
             min-height: 100vh;
         }
 
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+        }
+
+        .header-btns {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-guide {
+            background-color: var(--primary);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .btn-guide:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 900px) {
+            .dashboard {
+                grid-template-columns: 1.2fr 0.8fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--border-color);
+        }
+
         .canvas-container {
             position: relative;
             width: 100%;
@@ -46,11 +102,10 @@
             justify-content: center;
             align-items: center;
             background-color: #ffffff;
-            border-radius: 12px;
+            border-radius: 8px;
             overflow: hidden;
             border: 1px solid var(--border-color);
             padding: 10px;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
         }
 
         canvas {
@@ -61,20 +116,185 @@
             aspect-ratio: 1 / 1;
         }
 
-        /* Pulse glow animation when target is hit */
-        @keyframes targetPulse {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-            70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(16, 185, 129, 0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        .control-panel, .info-panel {
+            margin-bottom: 20px;
         }
 
-        .victory-glow {
-            animation: targetPulse 1.2s infinite;
-            border-color: var(--accent-green) !important;
-            background-color: #ecfdf5 !important;
+        .panel-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 12px;
+            border-bottom: 2px solid var(--bg-color);
+            padding-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        /* Modal Overlay for Instructions and LKPD */
+        .slider-group {
+            margin-bottom: 18px;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .slider-label {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .number-input-container {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .number-input-container label {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+
+        input[type=number] {
+            width: 70px;
+            padding: 4px 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--primary);
+            background-color: #eef2ff;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type=number]:focus {
+            border-color: var(--primary);
+            background-color: #ffffff;
+        }
+
+        input[type=range] {
+            width: 100%;
+            height: 6px;
+            border-radius: 5px;
+            background: #cbd5e1;
+            outline: none;
+            accent-color: var(--primary);
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        button {
+            flex: 1;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .btn-reset {
+            background-color: #e2e8f0;
+            color: var(--text-main);
+        }
+
+        .btn-reset:hover {
+            background-color: #cbd5e1;
+        }
+
+        .btn-game {
+            background-color: var(--accent-orange);
+            color: white;
+        }
+
+        .btn-game:hover {
+            background-color: #ea580c;
+        }
+
+        .btn-game.active {
+            background-color: var(--accent-red);
+        }
+
+        .equation-box {
+            background-color: #eef2ff;
+            border-left: 4px solid var(--primary);
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .info-item {
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .info-item strong {
+            color: var(--text-main);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: white;
+            background-color: var(--text-muted);
+        }
+
+        .badge-success { background-color: var(--accent-green); }
+        .badge-warning { background-color: var(--accent-orange); }
+        .badge-danger { background-color: var(--accent-red); }
+
+        .game-banner {
+            display: none;
+            background-color: #fef3c7;
+            border: 1px solid #fde047;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            color: #78350f;
+        }
+
+        .game-banner.active {
+            display: block;
+        }
+
+        .game-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+            background: #ffffff;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #fef08a;
+        }
+
+        .game-score-badge {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--accent-orange);
+        }
+
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -99,56 +319,198 @@
 
         .modal-content {
             background: #ffffff;
-            width: 90%;
-            max-width: 700px;
-            max-height: 85vh;
-            border-radius: 16px;
+            width: 92%;
+            max-width: 800px;
+            max-height: 88vh;
+            border-radius: 12px;
             padding: 24px;
             overflow-y: auto;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
             position: relative;
         }
 
-        /* Pop-up Selebrasi Kemenangan */
-        .victory-banner {
-            display: none;
+        .close-modal {
             position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--text-muted);
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+
+        .modal-tabs {
+            display: flex;
+            gap: 10px;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 15px;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            padding: 8px 14px;
+            border: none;
+            background: none;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .lkpd-section {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .lkpd-section h4 {
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .lkpd-section ul {
+            padding-left: 24px;
+            margin-top: 5px;
+        }
+
+        .lkpd-section li {
+            margin-bottom: 6px;
+        }
+
+        .lkpd-question {
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            margin-top: 5px;
+            font-size: 0.9rem;
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .read-only-score {
+            background-color: #f1f5f9;
+            border: 2px dashed var(--accent-orange);
+            color: var(--accent-orange);
+            font-size: 1.2rem;
+            font-weight: 800;
+            text-align: center;
+            padding: 8px;
+            border-radius: 8px;
+            width: 100%;
+            cursor: not-allowed;
+        }
+
+        .celebration-popup {
+            position: fixed;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%) scale(0.8);
-            background: rgba(255, 255, 255, 0.95);
-            border: 3px solid #10b981;
-            box-shadow: 0 20px 25px -5px rgba(16, 185, 129, 0.3);
+            transform: translate(-50%, -50%) scale(0.5);
+            background: #ffffff;
+            border: 3px solid var(--accent-orange);
             border-radius: 16px;
-            padding: 20px 30px;
+            padding: 25px 40px;
             text-align: center;
-            z-index: 50;
+            box-shadow: 0 25px 50px -12px rgba(249, 115, 22, 0.4);
+            z-index: 2000;
             opacity: 0;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             pointer-events: none;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .victory-banner.show {
-            display: block;
-            opacity: 1;
+        .celebration-popup.active {
             transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
         }
 
-        /* PERBAIKAN CETAK / PRINT AGAR TIDAK TERPOTONG DI ATAS */
+        .celebration-popup h2 {
+            color: var(--accent-orange);
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+
+        .basket-sim-container {
+            position: relative;
+            width: 100%;
+            background: #fff7ed;
+            border: 2px solid #ffedd5;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .basket-canvas-box {
+            position: relative;
+            width: 100%;
+            max-width: 650px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        #basketCanvas {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 16 / 9;
+            display: block;
+        }
+
+        .btn-throw {
+            background-color: var(--accent-orange);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+
+        .btn-throw:hover {
+            background-color: #ea580c;
+        }
+
         @media print {
             body {
                 background: white !important;
                 padding: 0 !important;
                 margin: 0 !important;
-                color: #000 !important;
             }
 
-            /* Sembunyikan elemen utama non-cetak */
-            header, .dashboard-grid, .victory-banner, #btnOpenGuide {
+            header, .dashboard, .celebration-popup {
                 display: none !important;
             }
 
-            /* Modal Overlay disesuaikan penuh untuk flow cetak */
             .modal-overlay {
                 position: static !important;
                 background: transparent !important;
@@ -171,7 +533,7 @@
                 border: none !important;
             }
 
-            .close-modal, .modal-tabs, .btn-print-action {
+            .close-modal, .modal-tabs, .btn-print-action, .basket-sim-container {
                 display: none !important;
             }
 
@@ -179,247 +541,244 @@
                 display: block !important;
             }
 
-            #tabGuide {
+            #tabGuide, #tabBasket {
                 display: none !important;
             }
 
-            textarea {
+            textarea, input[type=text] {
                 border: 1px solid #94a3b8 !important;
                 background: #ffffff !important;
-                resize: none !important;
             }
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800">
+<body>
 
-    <header class="text-center max-w-4xl mx-auto mb-6">
-        <h1 class="text-2xl md:text-3xl font-bold text-indigo-600 mb-1">Media Pembelajaran Fungsi Kuadrat</h1>
-        <p class="text-slate-500 text-sm md:text-base mb-3">Eksplorasi Grafik Fungsi Kuadrat y = ax² + bx + c secara Interaktif</p>
-        <div class="flex justify-center gap-3">
-            <button id="btnOpenGuide" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-5 py-2 rounded-full text-sm shadow-md transition-all flex items-center gap-2">
-                📖 Petunjuk & LKPD Siswa
-            </button>
+    <header>
+        <h1>Media Pembelajaran Fungsi Kuadrat</h1>
+        <p>Eksplorasi Grafik Fungsi Kuadrat y = ax² + bx + c secara Interaktif </p>
+        <div class="header-btns">
+            <button class="btn-guide" id="btnOpenGuide">📖 Petunjuk, Simulasi & LKPD Digital</button>
         </div>
     </header>
 
-    <div class="dashboard-grid max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
-        
-        <!-- Left Side: Interactive Canvas -->
-        <div class="lg:col-span-7 flex flex-col justify-start">
-            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm relative">
-                
-                <!-- Victory Overlay Notification -->
-                <div id="victoryBanner" class="victory-banner">
-                    <div class="text-4xl mb-1">🎯✨</div>
-                    <h2 class="text-xl font-bold text-emerald-600">TARGET TERKONCI!</h2>
-                    <p class="text-sm text-slate-600 font-medium mt-1">Luar Biasa! Kurva Tepat Mengenai Target.</p>
-                    <div class="text-xs text-indigo-600 font-semibold mt-2 animate-pulse">Menyiapkan Target Baru...</div>
-                </div>
-
-                <div class="canvas-container">
-                    <canvas id="graphCanvas" width="600" height="600"></canvas>
-                </div>
-
-                <!-- Legend Indicator -->
-                <div class="flex flex-wrap items-center justify-center gap-4 mt-3 text-xs text-slate-600 font-medium">
-                    <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span> Puncak (P)</div>
-                    <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-orange-500 inline-block"></span> Potong Y</div>
-                    <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span> Akar Sumbu-X</div>
-                    <div id="legendTarget" class="hidden items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-yellow-400 border border-red-500 inline-block"></span> Target (★)</div>
-                </div>
+    <div class="dashboard">
+        <div class="card">
+            <div class="canvas-container">
+                <canvas id="graphCanvas" width="600" height="600"></canvas>
             </div>
         </div>
 
-        <!-- Right Side: Control Panel & Analysis -->
-        <div class="lg:col-span-5 flex flex-col gap-4">
-            
-            <div id="gameBanner" class="bg-amber-50 border border-amber-200 rounded-2xl p-4 shadow-sm transition-all">
-                <div class="flex justify-between items-center mb-1">
-                    <strong class="text-amber-900 text-sm flex items-center gap-1">🎯 Tantangan "Tembak Target"</strong>
-                    <button id="btnNextTarget" class="hidden bg-amber-200 hover:bg-amber-300 text-amber-900 text-xs font-bold px-2.5 py-1 rounded-md transition-all">
-                        🔄 Target Selanjutnya
-                    </button>
-                </div>
-                <p class="text-xs text-amber-800 leading-relaxed">
-                    Ubah nilai <em>a</em>, <em>b</em>, dan <em>c</em> agar grafik parabola tepat melewati titik Bintang Merah!
-                </p>
-                <div id="gameStatus" class="mt-2 text-xs font-bold text-amber-900 flex items-center gap-1">
-                    Status: Siap Menembak
+        <div>
+            <div id="gameBanner" class="game-banner">
+                <strong>🎯 Mode Tantangan "Tembak Target":</strong>
+                <p>Atur parameter a, b, dan c agar parabola melintasi target bintang merah!</p>
+                <div class="game-stats">
+                    <span id="gameStatus" style="font-weight: bold; color: var(--accent-red);">Target Belum Terkena</span>
+                    <div>Skor: <span class="game-score-badge" id="liveScore">0</span> Poin</div>
                 </div>
             </div>
 
-            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
-                <div class="flex justify-between items-center pb-2 mb-4 border-b border-slate-100">
-                    <h3 class="font-bold text-indigo-600 text-base">Panel Kontrol Parameter</h3>
-                    <span class="text-xs bg-indigo-50 text-indigo-600 px-2.5 py-1 rounded-full font-semibold">y = ax² + bx + c</span>
+            <div class="card control-panel">
+                <div class="panel-title">
+                    <span>Panel Kontrol Parameter</span>
                 </div>
-
-                <!-- Slider A -->
-                <div class="mb-4">
-                    <div class="flex justify-between items-center mb-1">
-                        <label class="text-xs font-bold text-slate-700">Nilai a (Arah & Kelebaran)</label>
-                        <div class="flex items-center gap-1">
-                            <span class="text-xs font-bold text-indigo-600">a =</span>
-                            <input type="number" id="numA" min="-5" max="5" step="0.1" value="1" class="w-16 text-center text-xs font-bold bg-indigo-50 border border-indigo-200 rounded-md py-1 text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span class="slider-label">Nilai a (Arah & Kelebaran)</span>
+                        <div class="number-input-container">
+                            <label for="numA">a =</label>
+                            <input type="number" id="numA" min="-5" max="5" step="0.1" value="1">
                         </div>
                     </div>
-                    <input type="range" id="sliderA" min="-5" max="5" step="0.1" value="1" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                    <input type="range" id="sliderA" min="-5" max="5" step="0.1" value="1">
                 </div>
 
-                <!-- Slider B -->
-                <div class="mb-4">
-                    <div class="flex justify-between items-center mb-1">
-                        <label class="text-xs font-bold text-slate-700">Nilai b (Posisi Sumbu Simetri)</label>
-                        <div class="flex items-center gap-1">
-                            <span class="text-xs font-bold text-indigo-600">b =</span>
-                            <input type="number" id="numB" min="-10" max="10" step="0.5" value="0" class="w-16 text-center text-xs font-bold bg-indigo-50 border border-indigo-200 rounded-md py-1 text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span class="slider-label">Nilai b (Posisi Sumbu Simetri)</span>
+                        <div class="number-input-container">
+                            <label for="numB">b =</label>
+                            <input type="number" id="numB" min="-10" max="10" step="0.5" value="0">
                         </div>
                     </div>
-                    <input type="range" id="sliderB" min="-10" max="10" step="0.5" value="0" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                    <input type="range" id="sliderB" min="-10" max="10" step="0.5" value="0">
                 </div>
 
-                <!-- Slider C -->
-                <div class="mb-4">
-                    <div class="flex justify-between items-center mb-1">
-                        <label class="text-xs font-bold text-slate-700">Nilai c (Titik Potong Sumbu-Y)</label>
-                        <div class="flex items-center gap-1">
-                            <span class="text-xs font-bold text-indigo-600">c =</span>
-                            <input type="number" id="numC" min="-10" max="10" step="0.5" value="0" class="w-16 text-center text-xs font-bold bg-indigo-50 border border-indigo-200 rounded-md py-1 text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span class="slider-label">Nilai c (Titik Potong Sumbu-Y)</span>
+                        <div class="number-input-container">
+                            <label for="numC">c =</label>
+                            <input type="number" id="numC" min="-10" max="10" step="0.5" value="0">
                         </div>
                     </div>
-                    <input type="range" id="sliderC" min="-10" max="10" step="0.5" value="0" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                    <input type="range" id="sliderC" min="-10" max="10" step="0.5" value="0">
                 </div>
 
-                <!-- Control Action Buttons -->
-                <div class="flex gap-2 mt-4 pt-2 border-t border-slate-100">
-                    <button id="btnReset" class="flex-1 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg text-xs transition-all">
-                        🔄 Reset
-                    </button>
-                    <button id="btnGame" class="flex-1 py-2 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-lg text-xs transition-all shadow-sm">
-                        🎮 Mode Tantangan: OFF
-                    </button>
+                <div class="btn-container">
+                    <button class="btn-reset" id="btnReset">Reset Nilai</button>
+                    <button class="btn-game" id="btnGame">Mode Tantangan: OFF</button>
                 </div>
             </div>
 
-            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex-1">
-                <h3 class="font-bold text-indigo-600 text-base pb-2 mb-3 border-b border-slate-100">Analisis Karakteristik</h3>
-
-                <div id="eqDisplay" class="bg-indigo-50 border-l-4 border-indigo-600 p-3 rounded-r-lg text-lg font-bold text-indigo-700 text-center mb-4 tracking-wide shadow-inner">
+            <div class="card info-panel">
+                <div class="panel-title">Analisis Karakteristik</div>
+                
+                <div class="equation-box" id="eqDisplay">
                     y = x²
                 </div>
 
-                <div class="space-y-2 text-xs">
-                    <div class="flex justify-between items-center pb-1 border-b border-slate-50">
-                        <span class="text-slate-500 font-medium">Bentuk Parabola:</span>
-                        <span id="infoShape" class="font-semibold text-slate-800 text-right">-</span>
-                    </div>
-                    <div class="flex justify-between items-center pb-1 border-b border-slate-50">
-                        <span class="text-slate-500 font-medium">Diskriminan (D = b² - 4ac):</span>
-                        <span id="infoD" class="font-bold text-slate-800">-</span>
-                    </div>
-                    <div class="text-right">
-                        <span id="badgeD" class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold text-white bg-slate-400"></span>
-                    </div>
-                    <div class="flex justify-between items-center pb-1 border-b border-slate-50">
-                        <span class="text-slate-500 font-medium">Sumbu Simetri (x = -b / 2a):</span>
-                        <span id="infoAxis" class="font-bold text-indigo-600">-</span>
-                    </div>
-                    <div class="flex justify-between items-center pb-1 border-b border-slate-50">
-                        <span class="text-slate-500 font-medium">Titik Puncak/Balik P(x, y):</span>
-                        <span id="infoVertex" class="font-bold text-red-600">-</span>
-                    </div>
-                    <div class="flex justify-between items-center pb-1 border-b border-slate-50">
-                        <span class="text-slate-500 font-medium">Potong Sumbu-Y:</span>
-                        <span id="infoInterceptY" class="font-semibold text-orange-600">(0, 0)</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-slate-500 font-medium">Potong Sumbu-X:</span>
-                        <span id="infoInterceptX" class="font-semibold text-emerald-600 text-right">-</span>
-                    </div>
+                <div class="info-item">
+                    <strong>Bentuk Parabola:</strong> <span id="infoShape">-</span>
+                </div>
+                <div class="info-item">
+                    <strong>Diskriminan (D = b² - 4ac):</strong> <span id="infoD">-</span>
+                    <div><span id="badgeD" class="badge"></span></div>
+                </div>
+                <div class="info-item">
+                    <strong>Sumbu Simetri (x = -b / 2a):</strong> <span id="infoAxis">-</span>
+                </div>
+                <div class="info-item">
+                    <strong>Titik Puncak/Balik P(x, y):</strong> <span id="infoVertex">-</span>
+                </div>
+                <div class="info-item">
+                    <strong>Titik Potong Sumbu-Y:</strong> <span id="infoInterceptY">(0, 0)</span>
+                </div>
+                <div class="info-item">
+                    <strong>Titik Potong Sumbu-X:</strong> <span id="infoInterceptX">-</span>
                 </div>
             </div>
-
         </div>
     </div>
 
+    <!-- Celebration Popup -->
+    <div class="celebration-popup" id="celebrationPopup">
+        <h2>🎉 TARGET TERKUNCI!</h2>
+        <p>Luar biasa! +100 Poin ditambahkan ke skor kamu.</p>
+    </div>
+
+    <!-- Modal Petunjuk, Simulasi & LKPD -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-content">
-            <button class="close-modal text-slate-400 hover:text-slate-600 font-bold text-2xl" id="btnCloseModal">&times;</button>
+            <button class="close-modal" id="btnCloseModal">&times;</button>
             
-            <div class="modal-tabs flex gap-4 border-b border-slate-200 mb-4">
-                <button class="tab-btn font-bold text-sm text-indigo-600 pb-2 border-b-2 border-indigo-600" onclick="switchTab('tabGuide', event)">📌 Petunjuk Penggunaan</button>
-                <button class="tab-btn font-bold text-sm text-slate-500 pb-2 border-b-2 border-transparent hover:text-indigo-600" onclick="switchTab('tabLKPD', event)">📝 LKPD Interaktif</button>
+            <div class="modal-tabs">
+                <button class="tab-btn active" onclick="switchTab('tabGuide', event)">📌 Petunjuk Penggunaan</button>
+                <button class="tab-btn" onclick="switchTab('tabBasket', event)">🏀 Simulasi Bola Basket</button>
+                <button class="tab-btn" onclick="switchTab('tabLKPD', event)">📝 LKPD Digital</button>
             </div>
 
-            <!-- Tab 1: Guide -->
-            <div id="tabGuide" class="tab-content">
-                <h3 class="text-base font-bold text-slate-800 mb-2">Petunjuk Penggunaan Media</h3>
-                <p class="text-xs text-slate-600 leading-relaxed mb-3">Selamat datang! Media interaktif ini dirancang untuk membantumu memahami konsep Grafik Fungsi Kuadrat secara visual.</p>
-                
-                <ol class="list-decimal pl-5 text-xs text-slate-600 space-y-2 leading-relaxed">
-                    <li><strong>Mengubah Nilai Parameter:</strong> Geser slider atau ketik angka pada kotak a, b, dan c untuk melihat perubahan grafik secara langsung.</li>
+            <!-- Tab 1: Petunjuk Penggunaan -->
+            <div id="tabGuide" class="tab-content active">
+                <h3>Petunjuk Penggunaan Media Interaktif</h3>
+                <p>Selamat datang! Media interaktif ini dirancang untuk membantumu memahami konsep Grafik Fungsi Kuadrat secara visual dan konseptual.</p>
+                <br>
+                <ol style="padding-left: 20px;">
+                    <li><strong>Mengubah Nilai Parameter:</strong> Geser slider atau ketik angka pada kotak a, b, dan c untuk melihat perubahan grafik secara real-time.</li>
                     <li><strong>Titik-Titik Penting:</strong>
-                        <ul class="list-disc pl-4 mt-1 space-y-1">
-                            <li><span class="text-red-500 font-bold">● Titik Merah (P)</span> = Titik Puncak / Titik Balik Parabola.</li>
-                            <li><span class="text-orange-500 font-bold">● Titik Oranye</span> = Titik Potong Parabola dengan Sumbu-Y.</li>
-                            <li><span class="text-emerald-500 font-bold">● Titik Hijau</span> = Titik Potong Parabola dengan Sumbu-X (Akar-akar).</li>
+                        <ul>
+                            <li><span style="color: #ef4444;">● Titik Merah (P)</span> = Titik Puncak / Titik Balik Parabola.</li>
+                            <li><span style="color: #f97316;">● Titik Orange</span> = Titik Potong Parabola dengan Sumbu-Y.</li>
+                            <li><span style="color: #10b981;">● Titik Hijau</span> = Titik Potong Parabola dengan Sumbu-X (Akar-akar).</li>
                         </ul>
                     </li>
-                    <li><strong>Mode Tantangan (Game):</strong> Klik tombol <em>"Mode Tantangan: OFF"</em> untuk mengaktifkan permainan tembak target. Target akan otomatis diperbarui setiap kali kamu berhasil mengenainya!</li>
-                    <li><strong>Pengerjaan LKPD:</strong> Buka tab <em>"LKPD Interaktif"</em> untuk menyelesaikan lembar kerja eksplorasi. Hasil pengerjaan dapat dicetak atau disimpan sebagai PDF.</li>
+                    <li><strong>Mode Tantangan (Game):</strong> Klik tombol <em>"Mode Tantangan: OFF"</em> untuk mengaktifkan permainan tembak target. Sesuaikan nilai a, b, c agar kurva mengenai sasaran bintang merah. Setiap target berhasil akan otomatis memberi +100 Poin.</li>
+                    <li><strong>Simulasi Kontekstual Bola Basket:</strong> Buka tab <em>"Simulasi Bola Basket"</em> untuk melihat penerapan parabola dalam lemparan bola ke ring basket secara visual dan ter-animasi.</li>
+                    <li><strong>Pengerjaan LKPD Digital:</strong> Buka tab <em>"LKPD Digital"</em> untuk menyelesaikan lembar kerja eksplorasi. Hasil skor game akan terisi otomatis, lalu unduh jawaban dalam format PDF.</li>
                 </ol>
             </div>
 
-            <!-- Tab 2: LKPD -->
-            <div id="tabLKPD" class="tab-content hidden">
-                <h3 class="text-base font-bold text-slate-800 mb-1">Lembar Kerja Peserta Didik (LKPD)</h3>
-                <p class="text-xs text-slate-500 mb-4">Isi identitas dan kerjakan eksplorasi berikut dengan menggeser slider pada grafik!</p>
-                
-                <!-- Student Info Inputs -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
-                    <input type="text" placeholder="Nama Lengkap Siswa" class="p-2 text-xs border border-slate-300 rounded-lg focus:outline-indigo-500">
-                    <input type="text" placeholder="Kelas / No. Absen" class="p-2 text-xs border border-slate-300 rounded-lg focus:outline-indigo-500">
+            <!-- Tab 2: Simulasi Bola Basket -->
+            <div id="tabBasket" class="tab-content">
+                <h3>🏀 Visualisasi Kontekstual: Lemparan Bola Basket</h3>
+                <p style="color: var(--text-muted); font-size: 0.85rem;">Skenario: Sebuah lemparan bola basket mengikuti persamaan lintasan y = -x² + 6x + 2.</p>
+                <br>
+                <div class="basket-sim-container">
+                    <div class="basket-canvas-box">
+                        <canvas id="basketCanvas" width="650" height="365"></canvas>
+                    </div>
+                    <button class="btn-throw" id="btnThrow">Lempar Bola 🏀</button>
                 </div>
 
-                <!-- Section 1 -->
-                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 mb-3 text-xs">
-                    <h4 class="font-bold text-indigo-600 mb-1">Kegiatan 1: Pengaruh Nilai a terhadap Grafik</h4>
-                    <p class="text-slate-600 mb-2">Atur b = 0 dan c = 0. Ubah nilai a menjadi positif (a > 0), lalu ubah menjadi negatif (a < 0).</p>
-                    
-                    <label class="font-semibold block mb-1 text-slate-700">1. Apa yang terjadi pada arah keterbukaan parabola saat a > 0 dan a < 0?</label>
-                    <textarea class="w-full p-2 border border-slate-300 rounded-lg text-xs mb-2 focus:outline-indigo-500" rows="2" placeholder="Tuliskan jawabanmu di sini..."></textarea>
-                    
-                    <label class="font-semibold block mb-1 text-slate-700">2. Apa yang terjadi pada bentuk parabola saat nilai a semakin besar (misal a = 1 dibanding a = 4)?</label>
-                    <textarea class="w-full p-2 border border-slate-300 rounded-lg text-xs focus:outline-indigo-500" rows="2" placeholder="Tuliskan jawabanmu di sini..."></textarea>
+                <!-- Bagian Analisis Mandiri Siswa -->
+                <div class="lkpd-section" style="text-align: left; background: #ffffff; border-color: #cbd5e1;">
+                    <h4 style="color: var(--primary);">📝 Analisis Mandiri Lintasan Bola Basket:</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">
+                        Amatilah simulasi grafik di atas, lalu tentukan karakteristik matematis lintasannya berikut:
+                    </p>
+
+                    <div class="lkpd-question">1. Berapakah tinggi awal bola basket saat pelempar pertama kali melepaskan bola (x = 0)?</div>
+                    <textarea placeholder="Tuliskan jawaban tinggi awal bola basket (y)..."></textarea>
+
+                    <div class="lkpd-question">2. Hitunglah jarak horizontal (x_v = -b / 2a) saat bola berada di titik tertinggi!</div>
+                    <textarea placeholder="Tuliskan langkah perhitungan sumbu simetri x_v..."></textarea>
+
+                    <div class="lkpd-question">3. Berapakah tinggi maksimum (y_v) yang dicapai oleh bola basket tersebut?</div>
+                    <textarea placeholder="Tuliskan langkah perhitungan nilai puncak y_v..."></textarea>
+
+                    <div class="lkpd-question">4. Mengapa parabola lintasan bola tersebut terbuka ke bawah? </div>
+                    <textarea placeholder="Tuliskan analisis alasan parabola terbuka ke bawah..."></textarea>
+                </div>
+            </div>
+
+            <!-- Tab 3: LKPD Digital -->
+            <div id="tabLKPD" class="tab-content">
+                <h3>Lembar Kerja Peserta Didik (LKPD) Digital</h3>
+                <p style="color: var(--text-muted); font-size: 0.85rem;">Materi: Fungsi Kuadrat </p>
+                <br>
+                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                    <input type="text" placeholder="Nama Lengkap Siswa" style="flex:1; padding:8px; border:1px solid #cbd5e1; border-radius:6px;">
+                    <input type="text" placeholder="Kelas / Nomor Absen" style="width:180px; padding:8px; border:1px solid #cbd5e1; border-radius:6px;">
                 </div>
 
-                <!-- Section 2 -->
-                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 mb-3 text-xs">
-                    <h4 class="font-bold text-indigo-600 mb-1">Kegiatan 2: Pengaruh Nilai c terhadap Titik Potong Sumbu-Y</h4>
-                    <p class="text-slate-600 mb-2">Atur a = 1 dan b = 0. Ubah nilai c (misal c = -3, c = 0, c = 4).</p>
-                    
-                    <label class="font-semibold block mb-1 text-slate-700">Apa hubungan antara nilai c dengan posisi titik potong grafik pada Sumbu-Y?</label>
-                    <textarea class="w-full p-2 border border-slate-300 rounded-lg text-xs focus:outline-indigo-500" rows="2" placeholder="Tuliskan jawabanmu di sini..."></textarea>
+                <!-- Bagian Skor Otomatis -->
+                <div class="lkpd-section" style="background: #fff7ed; border-color: #ffedd5;">
+                    <h4 style="color: var(--accent-orange);">🏆 Skor Game Tembak Target (Otomatis)</h4>
+                    <p style="font-size: 0.85rem; color: #9a3412; margin-bottom: 8px;">Skor terisi otomatis dari hasil permainan di canvas (Read-Only):</p>
+                    <input type="text" id="lkpdScoreField" class="read-only-score" value="0 POIN" readonly>
                 </div>
 
-                <!-- Section 3 -->
-                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 mb-3 text-xs">
-                    <h4 class="font-bold text-indigo-600 mb-1">Kegiatan 3: Hubungan Diskriminan (D) dengan Titik Potong Sumbu-X</h4>
-                    <p class="text-slate-600 mb-1">Coba buat fungsi kuadrat dengan syarat:</p>
-                    <ul class="list-disc pl-4 text-slate-600 mb-2">
-                        <li>a) D > 0 (Contoh: a=1, b=0, c=-4)</li>
-                        <li>b) D = 0 (Contoh: a=1, b=-2, c=1)</li>
-                        <li>c) D < 0 (Contoh: a=1, b=0, c=4)</li>
-                    </ul>
-                    
-                    <label class="font-semibold block mb-1 text-slate-700">Kesimpulan apa yang kamu dapatkan mengenai jumlah titik potong Sumbu-X berdasarkan nilai Diskriminan (D)?</label>
-                    <textarea class="w-full p-2 border border-slate-300 rounded-lg text-xs focus:outline-indigo-500" rows="2" placeholder="Tuliskan jawaban kesimpulanmu di sini..."></textarea>
+                <!-- Kegiatan 1 -->
+                <div class="lkpd-section">
+                    <h4>Kegiatan 1: Pengaruh Nilai a (Keterbukaan & Kelebaran)</h4>
+                    <p>Atur b = 0 dan c = 0. Ubah-ubah nilai a dari positif ke negatif, serta dari nilai kecil ke besar.</p>
+                    <div class="lkpd-question">1. Bagaimana pengaruh tanda nilai a (positif/negatif) terhadap bentuk parabola?</div>
+                    <textarea placeholder="Tuliskan analisis hasil pengamatanmu..."></textarea>
+                    <div class="lkpd-question">2. Bagaimana pengaruh nilai mutlak |a| terhadap tingkat kelebaran kurva parabola?</div>
+                    <textarea placeholder="Tuliskan analisis hasil pengamatanmu..."></textarea>
                 </div>
 
-                <button class="btn-print-action w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs transition-all shadow-md mt-2 flex justify-center items-center gap-2" onclick="window.print()">
-                    🖨️ Cetak / Simpan Jawaban (PDF)
-                </button>
+                <!-- Kegiatan 2 (DIPERBAIKI MENJADI 2 PERTANYAAN TERPISAH) -->
+                <div class="lkpd-section">
+                    <h4>Kegiatan 2: Pengaruh Nilai b (Sumbu Simetri & Titik Puncak)</h4>
+                    <p>Atur a = 1 dan c = 0. Ubah nilai b dari negatif, nol, hingga positif.</p>
+
+                    <div class="lkpd-question">1. Saat a > 0, ke arah manakah sumbu simetri dan titik puncak bergeser jika nilai <strong>b bernilai positif (b > 0)</strong>?</div>
+                    <textarea placeholder="Tuliskan analisis pergeseran saat b positif..."></textarea>
+
+                    <div class="lkpd-question">2. Saat a > 0, ke arah manakah sumbu simetri dan titik puncak bergeser jika nilai <strong>b bernilai negatif (b < 0)</strong>?</div>
+                    <textarea placeholder="Tuliskan analisis pergeseran saat b negatif..."></textarea>
+                </div>
+
+                <!-- Kegiatan 3 -->
+                <div class="lkpd-section">
+                    <h4>Kegiatan 3: Pengaruh Nilai c (Titik Potong Sumbu-Y)</h4>
+                    <p>Atur a = 1 dan b = 0. Ubah-ubah nilai c.</p>
+                    <div class="lkpd-question">Apa hubungan antara nilai c dengan koordinat titik potong kurva parabola pada Sumbu-Y?</div>
+                    <textarea placeholder="Tuliskan jawaban hasil pengamatanmu..."></textarea>
+                </div>
+
+                <!-- Kegiatan 4 -->
+                <div class="lkpd-section">
+                    <h4>Kegiatan 4: Analisis Diskriminan (D = b² - 4ac)</h4>
+                    <p>Eksplorasi hubungan nilai Diskriminan (D) dengan banyaknya titik potong Sumbu-X.</p>
+                    <div class="lkpd-question">Jelaskan kondisi grafik saat D > 0, D = 0, dan D < 0!</div>
+                    <textarea placeholder="Tuliskan kesimpulan mengenai nilai Diskriminan di sini..."></textarea>
+                </div>
+
+                <button class="btn-guide btn-print-action" style="width: 100%; margin-top: 10px; background-color: var(--accent-orange);" onclick="window.print()">📥 Download / Cetak LKPD (PDF)</button>
             </div>
         </div>
     </div>
@@ -428,26 +787,22 @@
         const canvas = document.getElementById('graphCanvas');
         const ctx = canvas.getContext('2d');
 
-        // Slider Elements
         const sliderA = document.getElementById('sliderA');
         const sliderB = document.getElementById('sliderB');
         const sliderC = document.getElementById('sliderC');
 
-        // Number Input Elements
         const numA = document.getElementById('numA');
         const numB = document.getElementById('numB');
         const numC = document.getElementById('numC');
 
-        // Action Buttons & UI Elements
         const btnReset = document.getElementById('btnReset');
         const btnGame = document.getElementById('btnGame');
         const gameBanner = document.getElementById('gameBanner');
         const gameStatus = document.getElementById('gameStatus');
-        const btnNextTarget = document.getElementById('btnNextTarget');
-        const victoryBanner = document.getElementById('victoryBanner');
-        const legendTarget = document.getElementById('legendTarget');
+        const liveScore = document.getElementById('liveScore');
+        const lkpdScoreField = document.getElementById('lkpdScoreField');
+        const celebrationPopup = document.getElementById('celebrationPopup');
 
-        // Info Displays
         const eqDisplay = document.getElementById('eqDisplay');
         const infoShape = document.getElementById('infoShape');
         const infoD = document.getElementById('infoD');
@@ -457,12 +812,10 @@
         const infoInterceptY = document.getElementById('infoInterceptY');
         const infoInterceptX = document.getElementById('infoInterceptX');
 
-        // Modal Elements
         const modalOverlay = document.getElementById('modalOverlay');
         const btnOpenGuide = document.getElementById('btnOpenGuide');
         const btnCloseModal = document.getElementById('btnCloseModal');
 
-        // Grid Configuration
         const GRID_RANGE = 12; 
         const PADDING = 30; 
         
@@ -472,11 +825,10 @@
         let originX = width / 2;
         let originY = height / 2;
 
-        // Game State Variables
         let isGameMode = false;
         let targetPoint = { x: 0, y: 0 };
-        let hasHitCurrentTarget = false;
-        let autoNextTimeout = null;
+        let gameScore = 0;
+        let isHitCoolingDown = false;
 
         function toCanvasX(x) { return originX + x * scale; }
         function toCanvasY(y) { return originY - y * scale; }
@@ -540,7 +892,6 @@
                 ctx.stroke();
             }
 
-            // Draw Main X and Y Axes
             ctx.strokeStyle = '#94a3b8';
             ctx.lineWidth = 2;
 
@@ -554,7 +905,6 @@
             ctx.lineTo(originX, height);
             ctx.stroke();
 
-            // Axis Numbers
             ctx.fillStyle = '#64748b';
             ctx.font = '11px sans-serif';
 
@@ -591,12 +941,12 @@
             }
             ctx.stroke();
 
-            // Vertex Point
             let xv = -b / (2 * a);
             let yv = a * xv * xv + b * xv + c;
-            let D = b * b - 4 * a * c;
 
+            let D = b * b - 4 * a * c;
             let pointsToDraw = [];
+
             pointsToDraw.push({ x: xv, y: yv, color: '#ef4444', label: `P(${xv.toFixed(1)}, ${yv.toFixed(1)})` });
 
             if (Math.abs(xv - 0) > 0.05 || Math.abs(yv - c) > 0.05) {
@@ -644,8 +994,8 @@
             let cy = toCanvasY(targetPoint.y);
 
             ctx.beginPath();
-            ctx.arc(cx, cy, 12, 0, 2 * Math.PI);
-            ctx.fillStyle = hasHitCurrentTarget ? '#10b981' : '#ef4444';
+            ctx.arc(cx, cy, 10, 0, 2 * Math.PI);
+            ctx.fillStyle = '#ef4444';
             ctx.fill();
             ctx.strokeStyle = '#fef08a';
             ctx.lineWidth = 3;
@@ -662,41 +1012,41 @@
             let expectedY = a * targetPoint.x * targetPoint.x + b * targetPoint.x + c;
             let diff = Math.abs(expectedY - targetPoint.y);
 
-            if (diff < 0.35) {
-                if (!hasHitCurrentTarget) {
-                    hasHitCurrentTarget = true;
-                    
-                    // Trigger Victory Visuals
-                    gameStatus.innerHTML = "<span class='text-emerald-600'>🎉 BERHASIL! Tepat Mengenai Target!</span>";
-                    gameBanner.classList.add('victory-glow');
-                    victoryBanner.classList.add('show');
+            if (diff < 0.3 && !isHitCoolingDown) {
+                isHitCoolingDown = true;
+                gameStatus.textContent = "🎉 TARGET TERKENA!";
+                gameStatus.style.color = "#10b981";
 
-                    // Fire Confetti Animation
-                    if (typeof confetti === 'function') {
-                        confetti({
-                            particleCount: 80,
-                            spread: 70,
-                            origin: { y: 0.6 }
-                        });
-                    }
+                gameScore += 100;
+                liveScore.textContent = gameScore;
+                lkpdScoreField.value = `${gameScore} POIN`;
 
-                    // Schedule automatic next target generation
-                    clearTimeout(autoNextTimeout);
-                    autoNextTimeout = setTimeout(() => {
-                        if (isGameMode) {
-                            generateRandomTarget();
-                            update();
-                        }
-                    }, 2200);
-                }
-            } else {
-                if (hasHitCurrentTarget) {
-                    hasHitCurrentTarget = false;
-                    clearTimeout(autoNextTimeout);
-                }
-                gameStatus.innerHTML = `<span class='text-amber-800'>🎯 Bidik Target di (${targetPoint.x}, ${targetPoint.y})</span>`;
-                gameBanner.classList.remove('victory-glow');
-                victoryBanner.classList.remove('show');
+                triggerCelebration();
+
+                setTimeout(() => {
+                    generateRandomTarget();
+                    isHitCoolingDown = false;
+                    gameStatus.textContent = "Target Belum Terkena";
+                    gameStatus.style.color = "var(--accent-red)";
+                    update();
+                }, 1500);
+
+            } else if (!isHitCoolingDown) {
+                gameStatus.textContent = "Target Belum Terkena";
+                gameStatus.style.color = "var(--accent-red)";
+            }
+        }
+
+        function triggerCelebration() {
+            celebrationPopup.classList.add('active');
+            setTimeout(() => celebrationPopup.classList.remove('active'), 1400);
+
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 80,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
             }
         }
 
@@ -713,9 +1063,9 @@
             eqDisplay.innerHTML = `y = ${strA}${strB}${strC}`;
 
             if (a > 0) {
-                infoShape.textContent = "Terbuka ke ATAS (Minimum)";
+                infoShape.textContent = "Terbuka ke ATAS (Memiliki Nilai Minimum)";
             } else {
-                infoShape.textContent = "Terbuka ke BAWAH (Maksimum)";
+                infoShape.textContent = "Terbuka ke BAWAH (Memiliki Nilai Maksimum)";
             }
 
             let D = b * b - 4 * a * c;
@@ -723,13 +1073,13 @@
 
             if (D > 0) {
                 badgeD.textContent = "D > 0: Memotong Sumbu-X di 2 Titik";
-                badgeD.className = "inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold text-white bg-emerald-500";
+                badgeD.className = "badge badge-success";
             } else if (D === 0) {
                 badgeD.textContent = "D = 0: Menyinggung Sumbu-X di 1 Titik";
-                badgeD.className = "inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold text-white bg-amber-500";
+                badgeD.className = "badge badge-warning";
             } else {
                 badgeD.textContent = "D < 0: Tidak Memotong Sumbu-X";
-                badgeD.className = "inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold text-white bg-red-500";
+                badgeD.className = "badge badge-danger";
             }
 
             let xv = -b / (2 * a);
@@ -742,50 +1092,160 @@
             if (D > 0) {
                 let x1 = (-b + Math.sqrt(D)) / (2 * a);
                 let x2 = (-b - Math.sqrt(D)) / (2 * a);
-                infoInterceptX.textContent = `(${x1.toFixed(2)}, 0) & (${x2.toFixed(2)}, 0)`;
+                infoInterceptX.textContent = `(${x1.toFixed(2)}, 0) dan (${x2.toFixed(2)}, 0)`;
             } else if (D === 0) {
                 infoInterceptX.textContent = `(${xv.toFixed(2)}, 0)`;
             } else {
-                infoInterceptX.textContent = "Tidak Ada Akar Real";
+                infoInterceptX.textContent = "Tidak Ada Titik Potong Real";
             }
         }
 
         function generateRandomTarget() {
-            hasHitCurrentTarget = false;
-            victoryBanner.classList.remove('show');
-            gameBanner.classList.remove('victory-glow');
-
-            // Generate achievable grid target points
-            let rx = (Math.floor(Math.random() * 11) - 5);
+            let rx = (Math.floor(Math.random() * 13) - 6);
             let ry = (Math.floor(Math.random() * 15) - 7);
-            
-            // Ensure target is not purely (0,0) for better gameplay
-            if (rx === 0 && ry === 0) ry = 3;
-
             targetPoint = { x: rx, y: ry };
-            gameStatus.innerHTML = `<span class='text-amber-800'>🎯 Bidik Target di (${targetPoint.x}, ${targetPoint.y})</span>`;
         }
 
         function switchTab(tabId, evt) {
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('text-indigo-600', 'border-indigo-600');
-                btn.classList.add('text-slate-500', 'border-transparent');
-            });
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
             
-            evt.target.classList.remove('text-slate-500', 'border-transparent');
-            evt.target.classList.add('text-indigo-600', 'border-indigo-600');
-            document.getElementById(tabId).classList.remove('hidden');
+            evt.target.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+
+            if (tabId === 'tabBasket') {
+                initBasketSim();
+            }
         }
 
-        // Modal Event Handlers
+        /* --- SCRIPT SIMULASI BOLA BASKET --- */
+        const bCanvas = document.getElementById('basketCanvas');
+        const bCtx = bCanvas.getContext('2d');
+        const btnThrow = document.getElementById('btnThrow');
+        let animProgress = 0;
+        let isAnimating = false;
+
+        function initBasketSim() {
+            drawBasketScene(0);
+        }
+
+        function drawBasketScene(ballT) {
+            let bw = bCanvas.width;
+            let bh = bCanvas.height;
+
+            bCtx.clearRect(0, 0, bw, bh);
+
+            // Lapangan & Dinding
+            bCtx.fillStyle = '#f8fafc';
+            bCtx.fillRect(0, 0, bw, bh);
+
+            bCtx.fillStyle = '#ea580c';
+            bCtx.fillRect(0, bh - 40, bw, 40); // Lantai kayu
+
+            let startX = 70;
+            let scaleX = 70;
+            let scaleY = 22;
+
+            // Pemain Basket (Sumbu-Y / Intersept c = 2)
+            let startY = bh - 40 - (2 * scaleY);
+            
+            bCtx.fillStyle = '#4f46e5';
+            bCtx.fillRect(startX - 10, startY + 15, 20, 35); // Badan
+            bCtx.fillStyle = '#fcd34d';
+            bCtx.beginPath();
+            bCtx.arc(startX, startY, 12, 0, Math.PI * 2); // Kepala
+            bCtx.fill();
+
+            // Ring Basket (di x ≈ 6.3)
+            let hoopX = startX + 6.32 * scaleX;
+            let hoopY = bh - 40 - 2 * scaleY;
+            
+            bCtx.fillStyle = '#1e293b';
+            bCtx.fillRect(hoopX + 15, hoopY - 80, 8, 160); // Tiang
+            bCtx.fillStyle = '#ffffff';
+            bCtx.fillRect(hoopX - 10, hoopY - 30, 25, 40); // Papan Ring
+            bCtx.strokeStyle = '#dc2626';
+            bCtx.strokeRect(hoopX - 10, hoopY - 30, 25, 40);
+
+            bCtx.strokeStyle = '#ea580c';
+            bCtx.lineWidth = 4;
+            bCtx.beginPath();
+            bCtx.moveTo(hoopX - 25, hoopY + 5);
+            bCtx.lineTo(hoopX - 5, hoopY + 5);
+            bCtx.stroke(); // Jaring/Ring
+
+            // Kurva Parabola Lemparan Bola: y = -x^2 + 6x + 2
+            bCtx.beginPath();
+            bCtx.setLineDash([5, 5]);
+            bCtx.strokeStyle = '#94a3b8';
+            bCtx.lineWidth = 2;
+
+            for (let x = 0; x <= 6.32; x += 0.05) {
+                let y = -1 * x * x + 6 * x + 2;
+                let cx = startX + x * scaleX;
+                let cy = (bh - 40) - y * scaleY;
+                if (x === 0) bCtx.moveTo(cx, cy);
+                else bCtx.lineTo(cx, cy);
+            }
+            bCtx.stroke();
+            bCtx.setLineDash([]);
+
+            // Posisi Bola Bergerak
+            let currentX = ballT * 6.32;
+            let currentY = -1 * currentX * currentX + 6 * currentX + 2;
+            let ballCx = startX + currentX * scaleX;
+            let ballCy = (bh - 40) - currentY * scaleY;
+
+            // Gambar Bola Basket
+            bCtx.beginPath();
+            bCtx.arc(ballCx, ballCy, 10, 0, Math.PI * 2);
+            bCtx.fillStyle = '#f97316';
+            bCtx.fill();
+            bCtx.strokeStyle = '#7c2d12';
+            bCtx.lineWidth = 2;
+            bCtx.stroke();
+
+            // Titik Puncak Marker (3m, 11m)
+            let vertexX = startX + 3 * scaleX;
+            let vertexY = (bh - 40) - 11 * scaleY;
+
+            bCtx.fillStyle = '#ef4444';
+            bCtx.beginPath();
+            bCtx.arc(vertexX, vertexY, 6, 0, Math.PI * 2);
+            bCtx.fill();
+            bCtx.strokeStyle = '#ffffff';
+            bCtx.lineWidth = 2;
+            bCtx.stroke();
+
+            bCtx.fillStyle = '#1e293b';
+            bCtx.font = 'bold 12px sans-serif';
+            bCtx.textAlign = 'center';
+            bCtx.fillText('Puncak (3m, 11m)', vertexX, vertexY - 12);
+        }
+
+        btnThrow.addEventListener('click', () => {
+            if (isAnimating) return;
+            isAnimating = true;
+            animProgress = 0;
+
+            let animInterval = setInterval(() => {
+                animProgress += 0.02;
+                if (animProgress >= 1) {
+                    animProgress = 1;
+                    clearInterval(animInterval);
+                    isAnimating = false;
+                }
+                drawBasketScene(animProgress);
+            }, 30);
+        });
+
+        // Modal Handlers
         btnOpenGuide.addEventListener('click', () => modalOverlay.classList.add('active'));
         btnCloseModal.addEventListener('click', () => modalOverlay.classList.remove('active'));
         modalOverlay.addEventListener('click', (e) => {
             if (e.target === modalOverlay) modalOverlay.classList.remove('active');
         });
 
-        // Controls Event Listeners
         sliderA.addEventListener('input', update);
         sliderB.addEventListener('input', update);
         sliderC.addEventListener('input', update);
@@ -801,45 +1261,22 @@
             update();
         });
 
-        btnNextTarget.addEventListener('click', () => {
-            if (isGameMode) {
-                generateRandomTarget();
-                update();
-            }
-        });
-
         btnGame.addEventListener('click', () => {
             isGameMode = !isGameMode;
             if (isGameMode) {
-                btnGame.textContent = "🎮 Mode Tantangan: ON";
-                btnGame.classList.replace('bg-amber-500', 'bg-emerald-600');
-                btnGame.classList.replace('hover:bg-amber-600', 'hover:bg-emerald-700');
-                
-                btnNextTarget.classList.remove('hidden');
-                legendTarget.classList.remove('hidden');
-                legendTarget.classList.add('flex');
-                
+                btnGame.textContent = "Mode Tantangan: ON";
+                btnGame.classList.add('active');
+                gameBanner.classList.add('active');
                 generateRandomTarget();
             } else {
-                btnGame.textContent = "🎮 Mode Tantangan: OFF";
-                btnGame.classList.replace('bg-emerald-600', 'bg-amber-500');
-                btnGame.classList.replace('hover:bg-emerald-700', 'hover:bg-amber-600');
-                
-                btnNextTarget.classList.add('hidden');
-                legendTarget.classList.add('hidden');
-                legendTarget.classList.remove('flex');
-                
-                victoryBanner.classList.remove('show');
-                gameBanner.classList.remove('victory-glow');
-                gameStatus.innerHTML = "Status: Mode Tantangan Dinonaktifkan";
+                btnGame.textContent = "Mode Tantangan: OFF";
+                btnGame.classList.remove('active');
+                gameBanner.classList.remove('active');
             }
             update();
         });
 
-        // Initial Start
-        window.onload = function() {
-            update();
-        };
+        update();
     </script>
 </body>
 </html>
