@@ -59,7 +59,7 @@
         }
 
         .btn-guide {
-            background-color: var(--primary);
+            background-color: var(--accent-orange);
             color: white;
             padding: 9px 18px;
             border-radius: 20px;
@@ -72,7 +72,7 @@
         }
 
         .btn-guide:hover {
-            background-color: var(--primary-hover);
+            background-color: #ea580c;
         }
 
         /* Kartu Petunjuk Langsung di Halaman Utama */
@@ -96,6 +96,7 @@
             font-weight: 700;
             color: var(--primary);
             font-size: 1rem;
+            user-select: none;
         }
 
         .direct-guide-body {
@@ -122,7 +123,7 @@
             grid-template-columns: 1fr;
             gap: 20px;
             max-width: 1200px;
-            margin: 0 auto;
+            margin: 0 auto 24px auto;
         }
 
         @media (min-width: 900px) {
@@ -381,85 +382,33 @@
             color: var(--accent-orange);
         }
 
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(4px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .modal-content {
+        /* Kartu LKPD Digital Langsung di Layar Utama (Bisa Dilipat/Disembunyikan) */
+        .direct-lkpd-card {
+            max-width: 1200px;
+            margin: 0 auto 25px auto;
             background: #ffffff;
-            width: 92%;
-            max-width: 800px;
-            max-height: 88vh;
+            border: 1px solid var(--border-color);
+            border-top: 5px solid var(--primary);
             border-radius: 12px;
-            padding: 24px;
-            overflow-y: auto;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-            position: relative;
+            padding: 18px 22px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
 
-        .close-modal {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--text-muted);
-            cursor: pointer;
-            border: none;
-            background: none;
-        }
-
-        .modal-tabs {
+        .direct-lkpd-header {
             display: flex;
-            gap: 10px;
-            border-bottom: 2px solid var(--border-color);
-            margin-bottom: 15px;
-            overflow-x: auto;
-        }
-
-        .tab-btn {
-            padding: 8px 14px;
-            border: none;
-            background: none;
-            font-weight: 600;
-            color: var(--text-muted);
+            justify-content: space-between;
+            align-items: center;
             cursor: pointer;
-            border-bottom: 3px solid transparent;
-            white-space: nowrap;
-            flex: unset;
-        }
-
-        .tab-btn.active {
+            font-weight: 700;
             color: var(--primary);
-            border-bottom-color: var(--primary);
+            font-size: 1.15rem;
+            user-select: none;
         }
 
-        .tab-content {
-            display: none;
-            line-height: 1.6;
-            font-size: 0.95rem;
-        }
-
-        .tab-content.active {
-            display: block;
+        .direct-lkpd-body {
+            margin-top: 16px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 16px;
         }
 
         .lkpd-section {
@@ -511,6 +460,53 @@
             border-radius: 8px;
             width: 100%;
             cursor: not-allowed;
+        }
+
+        /* Modal Khusus Simulasi Basket */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: #ffffff;
+            width: 92%;
+            max-width: 800px;
+            max-height: 88vh;
+            border-radius: 12px;
+            padding: 24px;
+            overflow-y: auto;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--text-muted);
+            cursor: pointer;
+            border: none;
+            background: none;
         }
 
         .celebration-popup {
@@ -587,6 +583,7 @@
             background-color: #ea580c;
         }
 
+        /* Pengaturan Khusus Saat Dicetak / Unduh PDF LKPD */
         @media print {
             body {
                 background: white !important;
@@ -594,42 +591,22 @@
                 margin: 0 !important;
             }
 
-            header, .direct-guide-card, .dashboard, .celebration-popup {
+            header, .direct-guide-card, .dashboard, .celebration-popup, .modal-overlay, #lkpdToggleIcon, .btn-print-action {
                 display: none !important;
             }
 
-            .modal-overlay {
-                position: static !important;
-                background: transparent !important;
-                opacity: 1 !important;
-                pointer-events: auto !important;
-                display: block !important;
-                width: 100% !important;
-                height: auto !important;
-            }
-
-            .modal-content {
-                position: static !important;
-                width: 100% !important;
-                max-width: 100% !important;
-                max-height: none !important;
-                overflow: visible !important;
+            .direct-lkpd-card {
                 box-shadow: none !important;
+                border: none !important;
                 padding: 0 !important;
                 margin: 0 !important;
-                border: none !important;
+                max-width: 100% !important;
             }
 
-            .close-modal, .modal-tabs, .btn-print-action, .basket-sim-container {
-                display: none !important;
-            }
-
-            .tab-content {
+            .direct-lkpd-body {
                 display: block !important;
-            }
-
-            #tabBasket {
-                display: none !important;
+                border-top: none !important;
+                padding-top: 0 !important;
             }
 
             textarea, input[type=text] {
@@ -645,11 +622,11 @@
         <h1>Media Pembelajaran Fungsi Kuadrat</h1>
         <p>Eksplorasi Grafik Fungsi Kuadrat y = ax² + bx + c secara Interaktif (Kelas 10 SMA)</p>
         <div class="header-btns">
-            <button class="btn-guide" id="btnOpenLKPD">📝 Buka LKPD Digital & Simulasi Basket</button>
+            <button class="btn-guide" id="btnOpenBasket">🏀 Buka Simulasi Kontekstual Bola Basket</button>
         </div>
     </header>
 
-    <!-- Petunjuk Penggunaan Langsung Menyatu di Layar Utama -->
+    <!-- 1. Petunjuk Penggunaan Langsung Menyatu di Layar Utama -->
     <div class="direct-guide-card">
         <div class="direct-guide-header" id="toggleGuide">
             <span>📌 Petunjuk Penggunaan Media Interaktif</span>
@@ -661,11 +638,12 @@
                 <li><strong>2. Zoom Grafik:</strong> Klik tombol <strong>🔍+</strong> / <strong>🔍-</strong> di pojok kanan atas grafik (atau gunakan <em>scroll</em> mouse) untuk memperbesar tampilan koordinat titik.</li>
                 <li><strong>3. Legenda Titik Penting:</strong> <span style="color:#ef4444; font-weight:bold;">● Merah (P)</span> = Titik Puncak, <span style="color:#f97316; font-weight:bold;">● Oranye</span> = Potong Sumbu-Y, <span style="color:#10b981; font-weight:bold;">● Hijau</span> = Potong Sumbu-X.</li>
                 <li><strong>4. Mode Tantangan (Game):</strong> Aktifkan tombol tantangan dan arahkan kurva agar mengenai bintang merah untuk meraih <strong>+100 Poin</strong> per target.</li>
-                <li><strong>5. LKPD & Simulasi:</strong> Klik tombol <em>"Buka LKPD Digital & Simulasi Basket"</em> di atas untuk mengerjakan LKPD terlebih dahulu lalu mencoba simulasi kontekstual bola basket.</li>
+                <li><strong>5. LKPD & Simulasi:</strong> Isi <em>LKPD Digital</em> langsung di bawah grafik, lalu klik tombol oranye di atas untuk mencoba <em>Simulasi Kontekstual Bola Basket</em>.</li>
             </ul>
         </div>
     </div>
 
+    <!-- 2. Area Eksplorasi Utama (Grafik & Kontrol Parameter) -->
     <div class="dashboard">
         <div class="card">
             <div class="canvas-container">
@@ -764,111 +742,110 @@
         </div>
     </div>
 
+    <!-- 3. LKPD Digital Langsung di Layar Utama (Bisa Sembunyikan/Tampilkan) -->
+    <div class="direct-lkpd-card">
+        <div class="direct-lkpd-header" id="toggleLKPD">
+            <span>📝 Lembar Kerja Peserta Didik (LKPD) Digital — Kelas X SMA</span>
+            <span id="lkpdToggleIcon" style="font-size: 0.85rem; font-weight: 600;">Sembunyikan ▲</span>
+        </div>
+        <div class="direct-lkpd-body" id="directLKPDBody">
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 14px;">
+                Kerjakan lembar eksplorasi di bawah ini sambil mengamati perubahan grafik fungsi kuadrat di atas.
+            </p>
+
+            <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
+                <input type="text" placeholder="Nama Lengkap Siswa" style="flex:1; min-width: 220px; padding:8px; border:1px solid #cbd5e1; border-radius:6px;">
+                <input type="text" placeholder="Kelas / Nomor Absen" style="width:200px; padding:8px; border:1px solid #cbd5e1; border-radius:6px;">
+            </div>
+
+            <!-- Bagian Skor Otomatis -->
+            <div class="lkpd-section" style="background: #fff7ed; border-color: #ffedd5;">
+                <h4 style="color: var(--accent-orange);">🏆 Skor Game Tembak Target (Otomatis)</h4>
+                <p style="font-size: 0.85rem; color: #9a3412; margin-bottom: 8px;">Skor terisi otomatis dari hasil permainan di canvas (Read-Only):</p>
+                <input type="text" id="lkpdScoreField" class="read-only-score" value="0 POIN" readonly>
+            </div>
+
+            <!-- Kegiatan 1 -->
+            <div class="lkpd-section">
+                <h4>Kegiatan 1: Pengaruh Nilai a (Keterbukaan & Kelebaran)</h4>
+                <p>Atur a = 0 dan c = 0. Ubah-ubah nilai a dari positif ke negatif, serta dari nilai kecil ke besar.</p>
+                <div class="lkpd-question">1. Bagaimana pengaruh tanda nilai a (positif/negatif) terhadap bentuk parabola?</div>
+                <textarea placeholder="Tuliskan analisis hasil pengamatanmu..."></textarea>
+                <div class="lkpd-question">2. Bagaimana pengaruh nilai mutlak |a| terhadap tingkat kelebaran kurva parabola?</div>
+                <textarea placeholder="Tuliskan analisis hasil pengamatanmu..."></textarea>
+            </div>
+
+            <!-- Kegiatan 2 -->
+            <div class="lkpd-section">
+                <h4>Kegiatan 2: Pengaruh Nilai b (Sumbu Simetri & Titik Puncak)</h4>
+                <p>Atur a = 1 dan c = 0. Ubah nilai b dari negatif, nol, hingga positif.</p>
+
+                <div class="lkpd-question">1. Saat a > 0, ke arah manakah sumbu simetri dan titik puncak bergeser jika nilai <strong>b bernilai positif (b > 0)</strong>?</div>
+                <textarea placeholder="Tuliskan analisis pergeseran saat b positif..."></textarea>
+
+                <div class="lkpd-question">2. Saat a > 0, ke arah manakah sumbu simetri dan titik puncak bergeser jika nilai <strong>b bernilai negatif (b < 0)</strong>?</div>
+                <textarea placeholder="Tuliskan analisis pergeseran saat b negatif..."></textarea>
+            </div>
+
+            <!-- Kegiatan 3 -->
+            <div class="lkpd-section">
+                <h4>Kegiatan 3: Pengaruh Nilai c (Titik Potong Sumbu-Y)</h4>
+                <p>Atur a = 1 dan b = 0. Ubah-ubah nilai c.</p>
+                <div class="lkpd-question">Apa hubungan antara nilai c dengan koordinat titik potong kurva parabola pada Sumbu-Y?</div>
+                <textarea placeholder="Tuliskan jawaban hasil pengamatanmu..."></textarea>
+            </div>
+
+            <!-- Kegiatan 4 -->
+            <div class="lkpd-section">
+                <h4>Kegiatan 4: Analisis Diskriminan (D = b² - 4ac)</h4>
+                <p>Eksplorasi hubungan nilai Diskriminan (D) dengan banyaknya titik potong Sumbu-X.</p>
+                <div class="lkpd-question">Jelaskan kondisi grafik saat D > 0, D = 0, dan D < 0!</div>
+                <textarea placeholder="Tuliskan kesimpulan mengenai nilai Diskriminan di sini..."></textarea>
+            </div>
+
+            <button class="btn-guide btn-print-action" style="width: 100%; margin-top: 10px; background-color: var(--primary);" onclick="window.print()">📥 Download / Cetak LKPD (PDF)</button>
+        </div>
+    </div>
+
     <!-- Celebration Popup -->
     <div class="celebration-popup" id="celebrationPopup">
         <h2>🎉 TARGET TERKUNCI!</h2>
         <p>Luar biasa! +100 Poin ditambahkan ke skor kamu.</p>
     </div>
 
-    <!-- Modal LKPD & Simulasi (Urutan LKPD dulu baru Simulasi) -->
+    <!-- Modal Khusus Simulasi Bola Basket -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-content">
             <button class="close-modal" id="btnCloseModal">&times;</button>
             
-            <div class="modal-tabs">
-                <button class="tab-btn active" onclick="switchTab('tabLKPD', event)">📝 LKPD Digital SMA 10</button>
-                <button class="tab-btn" onclick="switchTab('tabBasket', event)">🏀 Simulasi Bola Basket</button>
+            <h3 style="color: var(--primary); margin-bottom: 6px;">🏀 Visualisasi Kontekstual: Lemparan Bola Basket</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem;">Skenario: Sebuah lemparan bola basket mengikuti persamaan lintasan y = -x² + 6x + 2.</p>
+            <br>
+            <div class="basket-sim-container">
+                <div class="basket-canvas-box">
+                    <canvas id="basketCanvas" width="650" height="365"></canvas>
+                </div>
+                <button class="btn-throw" id="btnThrow">Lempar Bola 🏀</button>
             </div>
 
-            <!-- Tab 1 (Pertama): LKPD Digital -->
-            <div id="tabLKPD" class="tab-content active">
-                <h3>Lembar Kerja Peserta Didik (LKPD) Digital</h3>
-                <p style="color: var(--text-muted); font-size: 0.85rem;">Materi: Fungsi Kuadrat | Kelas: X SMA</p>
-                <br>
-                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                    <input type="text" placeholder="Nama Lengkap Siswa" style="flex:1; padding:8px; border:1px solid #cbd5e1; border-radius:6px;">
-                    <input type="text" placeholder="Kelas / Nomor Absen" style="width:180px; padding:8px; border:1px solid #cbd5e1; border-radius:6px;">
-                </div>
+            <!-- Bagian Analisis Mandiri Siswa -->
+            <div class="lkpd-section" style="text-align: left; background: #ffffff; border-color: #cbd5e1;">
+                <h4 style="color: var(--primary);">📝 Analisis Mandiri Lintasan Bola Basket:</h4>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">
+                    Amatilah simulasi grafik di atas, lalu tentukan karakteristik matematis lintasannya berikut:
+                </p>
 
-                <!-- Bagian Skor Otomatis -->
-                <div class="lkpd-section" style="background: #fff7ed; border-color: #ffedd5;">
-                    <h4 style="color: var(--accent-orange);">🏆 Skor Game Tembak Target (Otomatis)</h4>
-                    <p style="font-size: 0.85rem; color: #9a3412; margin-bottom: 8px;">Skor terisi otomatis dari hasil permainan di canvas (Read-Only):</p>
-                    <input type="text" id="lkpdScoreField" class="read-only-score" value="0 POIN" readonly>
-                </div>
+                <div class="lkpd-question">1. Berapakah tinggi awal bola basket saat pelempar pertama kali melepaskan bola (x = 0)?</div>
+                <textarea placeholder="Tuliskan jawaban tinggi awal bola basket (y)..."></textarea>
 
-                <!-- Kegiatan 1 -->
-                <div class="lkpd-section">
-                    <h4>Kegiatan 1: Pengaruh Nilai a (Keterbukaan & Kelebaran)</h4>
-                    <p>Atur b = 0 dan c = 0. Ubah-ubah nilai a dari positif ke negatif, serta dari nilai kecil ke besar.</p>
-                    <div class="lkpd-question">1. Bagaimana pengaruh tanda nilai a (positif/negatif) terhadap bentuk parabola?</div>
-                    <textarea placeholder="Tuliskan analisis hasil pengamatanmu..."></textarea>
-                    <div class="lkpd-question">2. Bagaimana pengaruh nilai mutlak |a| terhadap tingkat kelebaran kurva parabola?</div>
-                    <textarea placeholder="Tuliskan analisis hasil pengamatanmu..."></textarea>
-                </div>
+                <div class="lkpd-question">2. Hitunglah jarak horizontal (x_v = -b / 2a) saat bola berada di titik tertinggi!</div>
+                <textarea placeholder="Tuliskan langkah perhitungan sumbu simetri x_v..."></textarea>
 
-                <!-- Kegiatan 2 -->
-                <div class="lkpd-section">
-                    <h4>Kegiatan 2: Pengaruh Nilai b (Sumbu Simetri & Titik Puncak)</h4>
-                    <p>Atur a = 1 dan c = 0. Ubah nilai b dari negatif, nol, hingga positif.</p>
+                <div class="lkpd-question">3. Berapakah tinggi maksimum (y_v) yang dicapai oleh bola basket tersebut?</div>
+                <textarea placeholder="Tuliskan langkah perhitungan nilai puncak y_v..."></textarea>
 
-                    <div class="lkpd-question">1. Saat a > 0, ke arah manakah sumbu simetri dan titik puncak bergeser jika nilai <strong>b bernilai positif (b > 0)</strong>?</div>
-                    <textarea placeholder="Tuliskan analisis pergeseran saat b positif..."></textarea>
-
-                    <div class="lkpd-question">2. Saat a > 0, ke arah manakah sumbu simetri dan titik puncak bergeser jika nilai <strong>b bernilai negatif (b < 0)</strong>?</div>
-                    <textarea placeholder="Tuliskan analisis pergeseran saat b negatif..."></textarea>
-                </div>
-
-                <!-- Kegiatan 3 -->
-                <div class="lkpd-section">
-                    <h4>Kegiatan 3: Pengaruh Nilai c (Titik Potong Sumbu-Y)</h4>
-                    <p>Atur a = 1 dan b = 0. Ubah-ubah nilai c.</p>
-                    <div class="lkpd-question">Apa hubungan antara nilai c dengan koordinat titik potong kurva parabola pada Sumbu-Y?</div>
-                    <textarea placeholder="Tuliskan jawaban hasil pengamatanmu..."></textarea>
-                </div>
-
-                <!-- Kegiatan 4 -->
-                <div class="lkpd-section">
-                    <h4>Kegiatan 4: Analisis Diskriminan (D = b² - 4ac)</h4>
-                    <p>Eksplorasi hubungan nilai Diskriminan (D) dengan banyaknya titik potong Sumbu-X.</p>
-                    <div class="lkpd-question">Jelaskan kondisi grafik saat D > 0, D = 0, dan D < 0!</div>
-                    <textarea placeholder="Tuliskan kesimpulan mengenai nilai Diskriminan di sini..."></textarea>
-                </div>
-
-                <button class="btn-guide btn-print-action" style="width: 100%; margin-top: 10px; background-color: var(--accent-orange);" onclick="window.print()">📥 Download / Cetak LKPD (PDF)</button>
-            </div>
-
-            <!-- Tab 2 (Kedua): Simulasi Bola Basket -->
-            <div id="tabBasket" class="tab-content">
-                <h3>🏀 Visualisasi Kontekstual: Lemparan Bola Basket</h3>
-                <p style="color: var(--text-muted); font-size: 0.85rem;">Skenario: Sebuah lemparan bola basket mengikuti persamaan lintasan y = -x² + 6x + 2.</p>
-                <br>
-                <div class="basket-sim-container">
-                    <div class="basket-canvas-box">
-                        <canvas id="basketCanvas" width="650" height="365"></canvas>
-                    </div>
-                    <button class="btn-throw" id="btnThrow">Lempar Bola 🏀</button>
-                </div>
-
-                <!-- Bagian Analisis Mandiri Siswa -->
-                <div class="lkpd-section" style="text-align: left; background: #ffffff; border-color: #cbd5e1;">
-                    <h4 style="color: var(--primary);">📝 Analisis Mandiri Lintasan Bola Basket:</h4>
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">
-                        Amatilah simulasi grafik di atas, lalu tentukan karakteristik matematis lintasannya berikut:
-                    </p>
-
-                    <div class="lkpd-question">1. Berapakah tinggi awal bola basket saat pelempar pertama kali melepaskan bola (x = 0)?</div>
-                    <textarea placeholder="Tuliskan jawaban tinggi awal bola basket (y)..."></textarea>
-
-                    <div class="lkpd-question">2. Hitunglah jarak horizontal (x_v = -b / 2a) saat bola berada di titik tertinggi!</div>
-                    <textarea placeholder="Tuliskan langkah perhitungan sumbu simetri x_v..."></textarea>
-
-                    <div class="lkpd-question">3. Berapakah tinggi maksimum (y_v) yang dicapai oleh bola basket tersebut?</div>
-                    <textarea placeholder="Tuliskan langkah perhitungan nilai puncak y_v..."></textarea>
-
-                    <div class="lkpd-question">4. Mengapa parabola lintasan bola tersebut terbuka ke bawah (bernilai a = -1)? Jelaskan secara fisika/matematika!</div>
-                    <textarea placeholder="Tuliskan analisis alasan parabola terbuka ke bawah..."></textarea>
-                </div>
+                <div class="lkpd-question">4. Mengapa parabola lintasan bola tersebut terbuka ke bawah (bernilai a = -1)? Jelaskan secara fisika/matematika!</div>
+                <textarea placeholder="Tuliskan analisis alasan parabola terbuka ke bawah..."></textarea>
             </div>
         </div>
     </div>
@@ -903,10 +880,10 @@
         const infoInterceptX = document.getElementById('infoInterceptX');
 
         const modalOverlay = document.getElementById('modalOverlay');
-        const btnOpenLKPD = document.getElementById('btnOpenLKPD');
+        const btnOpenBasket = document.getElementById('btnOpenBasket');
         const btnCloseModal = document.getElementById('btnCloseModal');
 
-        // Kontrol Zoom & Lipat Petunjuk
+        // Kontrol Zoom & Lipat Petunjuk + LKPD
         const btnZoomIn = document.getElementById('btnZoomIn');
         const btnZoomOut = document.getElementById('btnZoomOut');
         const btnZoomReset = document.getElementById('btnZoomReset');
@@ -915,6 +892,10 @@
         const toggleGuide = document.getElementById('toggleGuide');
         const directGuideBody = document.getElementById('directGuideBody');
         const guideToggleIcon = document.getElementById('guideToggleIcon');
+
+        const toggleLKPD = document.getElementById('toggleLKPD');
+        const directLKPDBody = document.getElementById('directLKPDBody');
+        const lkpdToggleIcon = document.getElementById('lkpdToggleIcon');
 
         const BASE_GRID_RANGE = 12; 
         const PADDING = 30; 
@@ -961,6 +942,17 @@
             } else {
                 directGuideBody.style.display = 'none';
                 guideToggleIcon.textContent = 'Tampilkan ▼';
+            }
+        });
+
+        // Toggle Buka/Tutup Kartu LKPD di Bawah
+        toggleLKPD.addEventListener('click', () => {
+            if (directLKPDBody.style.display === 'none') {
+                directLKPDBody.style.display = 'block';
+                lkpdToggleIcon.textContent = 'Sembunyikan ▲';
+            } else {
+                directLKPDBody.style.display = 'none';
+                lkpdToggleIcon.textContent = 'Tampilkan ▼';
             }
         });
 
@@ -1011,7 +1003,6 @@
             ctx.strokeStyle = '#f1f5f9';
             ctx.lineWidth = 1;
 
-            // Hitung jangkauan grid dinamis menyesuaikan level Zoom
             let maxUnitsX = Math.ceil((width / 2) / scale);
             let maxUnitsY = Math.ceil((height / 2) / scale);
 
@@ -1045,16 +1036,14 @@
             ctx.lineTo(originX, height);
             ctx.stroke();
 
-            // Panah & Keterangan Label Sumbu X dan Sumbu Y
+            // Keterangan Label Sumbu X dan Sumbu Y
             ctx.fillStyle = '#1e293b';
             ctx.font = 'bold 13px sans-serif';
 
-            // Label Sumbu X (Kanan)
             ctx.textAlign = 'right';
             ctx.textBaseline = 'bottom';
             ctx.fillText('Sumbu X', width - 10, originY - 8);
 
-            // Label Sumbu Y (Atas)
             ctx.textAlign = 'left';
             ctx.textBaseline = 'top';
             ctx.fillText('Sumbu Y', originX + 10, 10);
@@ -1063,7 +1052,6 @@
             ctx.fillStyle = '#64748b';
             ctx.font = '11px sans-serif';
 
-            // Jika zoom > 1.5 tampilkan setiap kelipatan 1, jika tidak kelipatan 2
             let step = zoomFactor >= 1.5 ? 1 : 2;
 
             for (let i = -maxUnitsX + 1; i <= maxUnitsX - 1; i += step) {
@@ -1268,18 +1256,6 @@
             targetPoint = { x: rx, y: ry };
         }
 
-        function switchTab(tabId, evt) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            
-            evt.target.classList.add('active');
-            document.getElementById(tabId).classList.add('active');
-
-            if (tabId === 'tabBasket') {
-                initBasketSim();
-            }
-        }
-
         /* --- SCRIPT SIMULASI BOLA BASKET --- */
         const bCanvas = document.getElementById('basketCanvas');
         const bCtx = bCanvas.getContext('2d');
@@ -1401,8 +1377,11 @@
             }, 30);
         });
 
-        // Modal Handlers
-        btnOpenLKPD.addEventListener('click', () => modalOverlay.classList.add('active'));
+        // Modal Handlers (Khusus Simulasi Bola Basket)
+        btnOpenBasket.addEventListener('click', () => {
+            modalOverlay.classList.add('active');
+            initBasketSim();
+        });
         btnCloseModal.addEventListener('click', () => modalOverlay.classList.remove('active'));
         modalOverlay.addEventListener('click', (e) => {
             if (e.target === modalOverlay) modalOverlay.classList.remove('active');
